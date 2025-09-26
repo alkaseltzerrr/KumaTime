@@ -67,7 +67,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex justify-between items-center">
-          <div>
+          <div className="flex-1 text-center">
             <h1 className="text-3xl font-bold text-gray-800">
               {isAuthenticated ? `Welcome back, ${user?.username}!` : 'Welcome to KumaTime!'}
             </h1>

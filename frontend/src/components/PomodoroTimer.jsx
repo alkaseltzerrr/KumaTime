@@ -116,60 +116,120 @@ export default function PomodoroTimer() {
     return `${m}:${s}`
   }
 
+  // Circular progress ring geometry
+  const R = 54
+  const C = 2 * Math.PI * R
+  const dash = C
+  const dashOffset = C * (1 - Math.min(Math.max(progress, 0), 1))
+
   return (
-    <div className="kt-wrap">
-      <h1>KumaTime</h1>
-      <div className={`kt-phase ${phase}`}>{phase === 'work' ? 'Focus' : phase === 'shortBreak' ? 'Short Break' : 'Long Break'}</div>
-      <div className="kt-timer">
-        <div className="kt-time">{fmt(secondsLeft)}</div>
-        <div className="kt-progress">
-          <div className="kt-bar" style={{ width: `${progress * 100}%` }} />
+    <div className="w-full h-full p-2">
+  <div className="w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6 relative overflow-hidden">
+        <div className="absolute -right-16 -top-16 opacity-20 text-9xl">🐻</div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">KumaTime</h2>
+            <div className="mt-1 inline-flex items-center gap-2">
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${phase === 'work' ? 'bg-red-100 text-red-700' : phase === 'shortBreak' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                {phase === 'work' ? 'Focus' : phase === 'shortBreak' ? 'Short Break' : 'Long Break'}
+              </span>
+              <span className="text-xs text-gray-500">Cycle {cycleCount}</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-500">Session</div>
+            <div className="text-lg font-semibold text-gray-700">{fmt(total)} total</div>
+          </div>
         </div>
-        <div className="kt-controls">
-          <button onClick={startPause}>{running ? 'Pause' : 'Start'}</button>
-          <button onClick={reset}>Reset</button>
-          <button onClick={skip}>Skip</button>
+
+        <div className="flex items-center gap-6 h-full">
+          <div className="relative w-56 h-56 flex-shrink-0">
+            <svg viewBox="0 0 140 140" className="w-full h-full">
+              <defs>
+                <linearGradient id="g1" x1="0%" x2="100%">
+                  <stop offset="0%" stopColor="#fb7185" />
+                  <stop offset="100%" stopColor="#7c3aed" />
+                </linearGradient>
+              </defs>
+              <g transform="translate(70,70)">
+                <circle r="58" fill="#fff" />
+                <circle r="54" fill="none" stroke="#f3e8ff" strokeWidth="12" />
+                <circle r="54" fill="none" stroke="url(#g1)" strokeWidth="12" strokeLinecap="round"
+                  strokeDasharray={dash} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 400ms linear' }} />
+              </g>
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div className="text-4xl font-bold text-gray-800">{fmt(secondsLeft)}</div>
+              <div className="text-xs text-gray-500 mt-1">{Math.round(progress*100)}% done</div>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <div className="flex gap-3 mb-3">
+              <button onClick={startPause} className={`flex-1 px-4 py-2 rounded-xl font-semibold shadow-sm transition ${running ? 'bg-yellow-400 hover:bg-yellow-500 text-white' : 'bg-green-500 hover:bg-green-600 text-white'}`}>
+                {running ? 'Pause' : 'Start'}
+              </button>
+              <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow">Reset</button>
+              <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow">Skip</button>
+            </div>
+
+            <div className="text-sm text-gray-600 mb-3">Quick controls</div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-3 bg-white/60 rounded-lg">
+                <div className="text-xs text-gray-500">Work</div>
+                <div className="font-medium">{Math.round(config.work/60)} min</div>
+              </div>
+              <div className="p-3 bg-white/60 rounded-lg">
+                <div className="text-xs text-gray-500">Break</div>
+                <div className="font-medium">{Math.round(config.shortBreak/60)} min</div>
+              </div>
+              <div className="p-3 bg-white/60 rounded-lg">
+                <div className="text-xs text-gray-500">Long</div>
+                <div className="font-medium">{Math.round(config.longBreak/60)} min</div>
+              </div>
+              <div className="p-3 bg-white/60 rounded-lg">
+                <div className="text-xs text-gray-500">Every</div>
+                <div className="font-medium">{config.cyclesBeforeLongBreak} cycles</div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <details className="mt-4 bg-white/30 rounded-lg p-3">
+          <summary className="cursor-pointer font-medium">Config</summary>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <label className="text-sm text-gray-600">Work (min)
+              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={180} value={Math.round(config.work/60)} onChange={(e)=>{
+                const v = Math.max(1, Number(e.target.value)||25)
+                setConfig((c)=>({ ...c, work: v*60 }))
+                if (phase==='work') setSecondsLeft(v*60)
+              }} />
+            </label>
+            <label className="text-sm text-gray-600">Short break (min)
+              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={60} value={Math.round(config.shortBreak/60)} onChange={(e)=>{
+                const v = Math.max(1, Number(e.target.value)||5)
+                setConfig((c)=>({ ...c, shortBreak: v*60 }))
+                if (phase==='shortBreak') setSecondsLeft(v*60)
+              }} />
+            </label>
+            <label className="text-sm text-gray-600">Long break (min)
+              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={120} value={Math.round(config.longBreak/60)} onChange={(e)=>{
+                const v = Math.max(1, Number(e.target.value)||15)
+                setConfig((c)=>({ ...c, longBreak: v*60 }))
+                if (phase==='longBreak') setSecondsLeft(v*60)
+              }} />
+            </label>
+            <label className="text-sm text-gray-600">Cycles before long break
+              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={12} value={config.cyclesBeforeLongBreak} onChange={(e)=>{
+                const v = Math.max(1, Number(e.target.value)||4)
+                setConfig((c)=>({ ...c, cyclesBeforeLongBreak: v }))
+              }} />
+            </label>
+          </div>
+        </details>
+
+        <SessionHistory />
       </div>
-
-      <details className="kt-config">
-        <summary>Config</summary>
-        <div className="kt-grid">
-          <label>
-            Work (min)
-            <input type="number" min={1} max={180} value={Math.round(config.work/60)} onChange={(e)=>{
-              const v = Math.max(1, Number(e.target.value)||25)
-              setConfig((c)=>({ ...c, work: v*60 }))
-              if (phase==='work') setSecondsLeft(v*60)
-            }} />
-          </label>
-          <label>
-            Short break (min)
-            <input type="number" min={1} max={60} value={Math.round(config.shortBreak/60)} onChange={(e)=>{
-              const v = Math.max(1, Number(e.target.value)||5)
-              setConfig((c)=>({ ...c, shortBreak: v*60 }))
-              if (phase==='shortBreak') setSecondsLeft(v*60)
-            }} />
-          </label>
-          <label>
-            Long break (min)
-            <input type="number" min={1} max={120} value={Math.round(config.longBreak/60)} onChange={(e)=>{
-              const v = Math.max(1, Number(e.target.value)||15)
-              setConfig((c)=>({ ...c, longBreak: v*60 }))
-              if (phase==='longBreak') setSecondsLeft(v*60)
-            }} />
-          </label>
-          <label>
-            Cycles before long break
-            <input type="number" min={1} max={12} value={config.cyclesBeforeLongBreak} onChange={(e)=>{
-              const v = Math.max(1, Number(e.target.value)||4)
-              setConfig((c)=>({ ...c, cyclesBeforeLongBreak: v }))
-            }} />
-          </label>
-        </div>
-      </details>
-
-      <SessionHistory />
     </div>
   )
 }

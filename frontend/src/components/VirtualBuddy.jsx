@@ -70,7 +70,7 @@ const VirtualBuddy = ({ mood = 'idle', level = 1, happiness = 50 }) => {
   return (
     <div className="flex flex-col items-center justify-center">
       <motion.div
-        className="relative"
+        className="relative pt-2"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
@@ -83,7 +83,7 @@ const VirtualBuddy = ({ mood = 'idle', level = 1, happiness = 50 }) => {
         
         {/* Bear body */}
         <motion.div
-          className="text-center select-none"
+          className="text-center select-none pb-2"
           style={{ fontSize: `${size}px` }}
           animate={getMoodAnimation()}
         >
@@ -137,7 +137,7 @@ const VirtualBuddy = ({ mood = 'idle', level = 1, happiness = 50 }) => {
         </div>
 
         {/* Level badge */}
-        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
+  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
           <motion.div
             className="bg-pastel-peach px-3 py-1 rounded-full shadow-md"
             initial={{ scale: 0 }}
