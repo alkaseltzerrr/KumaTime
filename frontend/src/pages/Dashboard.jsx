@@ -14,11 +14,114 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [badges, setBadges] = useState([]);
   const [idleTimeout, setIdleTimeout] = useState(null);
+  const [currentTip, setCurrentTip] = useState(null);
+
+  // Study tips collection
+  const studyTips = [
+    {
+      icon: "🧠",
+      title: "Brain Break",
+      tip: "Take a 5-minute walk between study sessions to boost memory retention and creativity!"
+    },
+    {
+      icon: "💧",
+      title: "Stay Hydrated",
+      tip: "Drink water regularly! Dehydration can reduce concentration by up to 12%."
+    },
+    {
+      icon: "🌱",
+      title: "The 2-Minute Rule",
+      tip: "If a task takes less than 2 minutes, do it immediately instead of adding it to your todo list."
+    },
+    {
+      icon: "🎯",
+      title: "Active Recall",
+      tip: "Test yourself without looking at notes. It's more effective than re-reading material!"
+    },
+    {
+      icon: "🌙",
+      title: "Sleep Smart",
+      tip: "Get 7-9 hours of sleep. Your brain consolidates memories while you rest!"
+    },
+    {
+      icon: "🍃",
+      title: "Fresh Air",
+      tip: "Study near a window or in a well-ventilated room. Fresh air improves focus and alertness."
+    },
+    {
+      icon: "📱",
+      title: "Phone Freedom",
+      tip: "Put your phone in another room while studying. Even its presence can be distracting!"
+    },
+    {
+      icon: "🎵",
+      title: "Music Magic",
+      tip: "Try instrumental music or nature sounds. Lyrics can interfere with reading comprehension."
+    },
+    {
+      icon: "⏰",
+      title: "Time Blocking",
+      tip: "Schedule specific time slots for different subjects. Your brain loves routine!"
+    },
+    {
+      icon: "🏃",
+      title: "Exercise Boost",
+      tip: "20 minutes of exercise before studying can improve focus for up to 2 hours!"
+    },
+    {
+      icon: "🍎",
+      title: "Brain Food",
+      tip: "Eat blueberries, nuts, or dark chocolate for a natural cognitive boost!"
+    },
+    {
+      icon: "📝",
+      title: "Write by Hand",
+      tip: "Taking notes by hand improves learning and memory better than typing."
+    },
+    {
+      icon: "🌅",
+      title: "Morning Power",
+      tip: "Your brain is sharpest 2-4 hours after waking up. Schedule tough subjects then!"
+    },
+    {
+      icon: "🔄",
+      title: "Spaced Repetition",
+      tip: "Review material after 1 day, 3 days, 1 week, and 1 month for long-term retention."
+    },
+    {
+      icon: "🎨",
+      title: "Visual Learning",
+      tip: "Create mind maps or diagrams. Visual representations help remember complex information."
+    },
+    {
+      icon: "🤝",
+      title: "Study Buddy",
+      tip: "Explain concepts to someone else. Teaching others is one of the best ways to learn!"
+    },
+    {
+      icon: "🎪",
+      title: "Change Scenery",
+      tip: "Study in different locations. Your brain creates stronger memories with varied environments."
+    },
+    {
+      icon: "🍋",
+      title: "Scent Power",
+      tip: "Try peppermint or lemon scents while studying. They can improve alertness and memory!"
+    }
+  ];
+
+  // Get random tip on component mount and when needed
+  const getRandomTip = () => {
+    const randomIndex = Math.floor(Math.random() * studyTips.length);
+    return studyTips[randomIndex];
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchStats();
     }
+    // Set a random tip on component mount
+    setCurrentTip(getRandomTip());
   }, [isAuthenticated]);
 
   // Set buddy to sleepy after 5 minutes of idle
@@ -197,9 +300,20 @@ const Dashboard = () => {
               transition={{ delay: 0.4 }}
               className="bg-gradient-to-br from-pastel-mint/50 to-pastel-blue/50 rounded-3xl shadow-xl p-6"
             >
-              <h3 className="font-bold mb-2">💡 Study Tip</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold flex items-center gap-2">
+                  {currentTip?.icon} {currentTip?.title || "Study Tip"}
+                </h3>
+                <button 
+                  onClick={() => setCurrentTip(getRandomTip())}
+                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300 text-sm hover:scale-110 transform"
+                  title="Get new tip"
+                >
+                  🔄
+                </button>
+              </div>
               <p className="text-sm text-gray-700">
-                Take short breaks between focus sessions. Your buddy will keep you company!
+                {currentTip?.tip || "Loading tip..."}
               </p>
             </motion.div>
           </div>
