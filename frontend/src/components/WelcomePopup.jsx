@@ -13,23 +13,27 @@ const WelcomePopup = () => {
     const welcomeShown = localStorage.getItem('kumatime-welcome-shown');
     
     if (!welcomeShown && !hasShown) {
+      let showTimer, hideTimer;
+      
       // Show popup after a brief delay for a nice entrance
-      const showTimer = setTimeout(() => {
+      showTimer = setTimeout(() => {
         setIsVisible(true);
         setHasShown(true);
-      }, 1000);
-
-      // Auto-hide after 7 seconds
-      const hideTimer = setTimeout(() => {
-        handleClose();
-      }, 8000); // 1s delay + 7s visible
+        
+        // Set auto-hide timer after popup becomes visible
+        hideTimer = setTimeout(() => {
+          setIsVisible(false);
+          localStorage.setItem('kumatime-welcome-shown', 'true');
+        }, 7000); // 7 seconds visible after it shows
+        
+      }, 1000); // 1 second initial delay
 
       return () => {
-        clearTimeout(showTimer);
-        clearTimeout(hideTimer);
+        if (showTimer) clearTimeout(showTimer);
+        if (hideTimer) clearTimeout(hideTimer);
       };
     }
-  }, [hasShown]);
+  }, []); // Remove hasShown dependency to prevent re-runs
 
   const handleClose = () => {
     setIsVisible(false);
