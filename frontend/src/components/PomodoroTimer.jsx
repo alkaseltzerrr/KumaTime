@@ -125,37 +125,47 @@ export default function PomodoroTimer() {
   const dashOffset = C * (1 - Math.min(Math.max(progress, 0), 1))
 
   return (
-    <div className="w-full h-full p-2">
+    <div className="w-full h-full p-2 relative">
+      {/* Focus Mode Toggle - Outside the main div when not in focus mode */}
+      {!focusMode && (
+        <button 
+          onClick={toggleFocusMode}
+          className="absolute top-0 right-0 z-10 px-3 py-1 rounded-full text-sm font-medium transition-all bg-white/80 text-gray-700 hover:bg-white shadow-sm"
+        >
+          🔍 Focus Mode
+        </button>
+      )}
+      
       <div className={`w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6 relative overflow-hidden transition-all duration-500 ${focusMode ? 'bg-gradient-to-br from-gray-900 to-black' : ''}`}>
         {!focusMode && <div className="absolute -right-16 -top-16 opacity-20 text-9xl">🐻</div>}
         
-        {/* Focus Mode Toggle */}
-        <div className="absolute top-4 right-4">
-          <button 
-            onClick={toggleFocusMode}
-            className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
-              focusMode 
-                ? 'bg-gray-700 text-white hover:bg-gray-600' 
-                : 'bg-white/60 text-gray-700 hover:bg-white'
-            }`}
-          >
-            {focusMode ? '🔍 Exit Focus' : '🔍 Focus Mode'}
-          </button>
-        </div>
+        {/* Focus Mode Toggle - Inside when in focus mode */}
+        {focusMode && (
+          <div className="absolute top-4 right-4">
+            <button 
+              onClick={toggleFocusMode}
+              className="px-3 py-1 rounded-full text-sm font-medium transition-all bg-gray-700 text-white hover:bg-gray-600"
+            >
+              🔍 Exit Focus
+            </button>
+          </div>
+        )}
 
         <div className={`flex items-center justify-between mb-4 ${focusMode ? 'text-white' : ''}`}>
           <div>
             <h2 className={`text-2xl font-bold ${focusMode ? 'text-white' : 'text-gray-800'}`}>KumaTime</h2>
-            <div className="mt-1 inline-flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                focusMode 
-                  ? (phase === 'work' ? 'bg-red-900/50 text-red-200' : phase === 'shortBreak' ? 'bg-green-900/50 text-green-200' : 'bg-blue-900/50 text-blue-200')
-                  : (phase === 'work' ? 'bg-red-100 text-red-700' : phase === 'shortBreak' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700')
-              }`}>
-                {phase === 'work' ? 'Focus' : phase === 'shortBreak' ? 'Short Break' : 'Long Break'}
-              </span>
-              <span className={`text-xs ${focusMode ? 'text-gray-400' : 'text-gray-500'}`}>Cycle {cycleCount}</span>
-            </div>
+            {!focusMode && (
+              <div className="mt-1 inline-flex items-center gap-2">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  phase === 'work' ? 'bg-red-100 text-red-700' : 
+                  phase === 'shortBreak' ? 'bg-green-100 text-green-700' : 
+                  'bg-blue-100 text-blue-700'
+                }`}>
+                  {phase === 'work' ? 'Focus' : phase === 'shortBreak' ? 'Short Break' : 'Long Break'}
+                </span>
+                <span className="text-xs text-gray-500">Cycle {cycleCount}</span>
+              </div>
+            )}
           </div>
           {!focusMode && (
             <div className="text-right">
