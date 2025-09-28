@@ -56,6 +56,12 @@ export default function PomodoroTimer() {
   const [secondsLeft, setSecondsLeft] = useState(config.work)
   const [running, setRunning] = useState(false)
   const [cycleCount, setCycleCount] = useState(0)
+  const [showFocusOptions, setShowFocusOptions] = useState(false)
+  const [focusOptions, setFocusOptions] = useState({
+    fullscreen: false,
+    hideProgress: false,
+    minimalistMode: false
+  })
   const beep = useBeep()
 
   // Persist config changes
@@ -102,6 +108,35 @@ export default function PomodoroTimer() {
     }
   }, [secondsLeft, running, phase, cycleCount, config, beep, storage])
 
+  // Fullscreen functionality
+  const enterFullscreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    }
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  };
+
+  const handleFocusModeToggle = () => {
+    if (!focusMode) {
+      // Entering focus mode
+      if (focusOptions.fullscreen) {
+        enterFullscreen();
+      }
+    } else {
+      // Exiting focus mode
+      if (document.fullscreenElement) {
+        exitFullscreen();
+      }
+    }
+    toggleFocusMode();
+    setShowFocusOptions(false);
+  };
+
   const total = phase === 'work' ? config.work : phase === 'shortBreak' ? config.shortBreak : config.longBreak
   const progress = 1 - secondsLeft / total
 
@@ -125,26 +160,86 @@ export default function PomodoroTimer() {
   const dashOffset = C * (1 - Math.min(Math.max(progress, 0), 1))
 
   return (
-    <div className="w-full h-full p-2 relative">
-      {/* Focus Mode Toggle - Outside the main div when not in focus mode */}
+    <div className={`w-full h-full p-2 relative ${focusMode ? 'fixed inset-0 z-50 p-0' : ''}`}>
+      {/* Focus Mode Toggle with Options - Outside the main div when not in focus mode */}
       {!focusMode && (
-        <button 
-          onClick={toggleFocusMode}
-          className="absolute top-0 right-0 z-10 px-3 py-1 rounded-full text-sm font-medium transition-all bg-white/80 text-gray-700 hover:bg-white shadow-sm"
-        >
-          🔍 Focus Mode
-        </button>
+        <div className="absolute top-0 right-0 z-10">
+          <div className="relative">
+            <button 
+              onClick={() => setShowFocusOptions(!showFocusOptions)}
+              className="px-3 py-1 rounded-full text-sm font-medium transition-all bg-white/80 text-gray-700 hover:bg-white shadow-sm"
+            >
+              🔍 Focus Mode ▼
+            </button>
+            
+            {/* Focus Options Dropdown */}
+            {showFocusOptions && (
+              <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border p-4 min-w-48">
+                <h4 className="font-semibold text-gray-800 mb-3">Focus Options</h4>
+                
+                <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={focusOptions.fullscreen}
+                    onChange={(e) => setFocusOptions(prev => ({...prev, fullscreen: e.target.checked}))}
+                    className="rounded text-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Fullscreen Mode</span>
+                </label>
+                
+                <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={focusOptions.hideProgress}
+                    onChange={(e) => setFocusOptions(prev => ({...prev, hideProgress: e.target.checked}))}
+                    className="rounded text-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Hide Progress Ring</span>
+                </label>
+                
+                <label className="flex items-center gap-2 mb-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={focusOptions.minimalistMode}
+                    onChange={(e) => setFocusOptions(prev => ({...prev, minimalistMode: e.target.checked}))}
+                    className="rounded text-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">Ultra Minimalist</span>
+                </label>
+                
+                <div className="flex gap-2">
+                  <button 
+                    onClick={handleFocusModeToggle}
+                    className="flex-1 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                  >
+                    Enter Focus
+                  </button>
+                  <button 
+                    onClick={() => setShowFocusOptions(false)}
+                    className="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
       
-      <div className={`w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6 relative overflow-hidden transition-all duration-500 ${focusMode ? 'bg-gradient-to-br from-gray-900 to-black' : ''}`}>
+      <div className={`w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6 relative overflow-hidden transition-all duration-500 ${
+        focusMode 
+          ? `bg-gradient-to-br from-gray-900 to-black ${focusMode ? 'rounded-none h-screen' : ''}` 
+          : ''
+      }`}>
         {!focusMode && <div className="absolute -right-16 -top-16 opacity-20 text-9xl">🐻</div>}
         
         {/* Focus Mode Toggle - Inside when in focus mode */}
         {focusMode && (
           <div className="absolute top-4 right-4">
             <button 
-              onClick={toggleFocusMode}
-              className="px-3 py-1 rounded-full text-sm font-medium transition-all bg-gray-700 text-white hover:bg-gray-600"
+              onClick={handleFocusModeToggle}
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-gray-700 text-white hover:bg-gray-600"
             >
               🔍 Exit Focus
             </button>
@@ -153,7 +248,9 @@ export default function PomodoroTimer() {
 
         <div className={`flex items-center justify-between mb-4 ${focusMode ? 'text-white' : ''}`}>
           <div>
-            <h2 className={`text-2xl font-bold ${focusMode ? 'text-white' : 'text-gray-800'}`}>KumaTime</h2>
+            <h2 className={`font-bold ${focusMode ? 'text-white text-4xl' : 'text-gray-800 text-2xl'} transition-all duration-500`}>
+              KumaTime
+            </h2>
             {!focusMode && (
               <div className="mt-1 inline-flex items-center gap-2">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -176,26 +273,36 @@ export default function PomodoroTimer() {
         </div>
 
         <div className={`flex items-center gap-6 h-full ${focusMode ? 'justify-center' : ''}`}>
-          <div className={`relative flex-shrink-0 ${focusMode ? 'w-80 h-80' : 'w-56 h-56'} transition-all duration-500`}>
-            <svg viewBox="0 0 140 140" className="w-full h-full">
-              <defs>
-                <linearGradient id="g1" x1="0%" x2="100%">
-                  <stop offset="0%" stopColor={focusMode ? "#374151" : "#fb7185"} />
-                  <stop offset="100%" stopColor={focusMode ? "#1f2937" : "#7c3aed"} />
-                </linearGradient>
-              </defs>
-              <g transform="translate(70,70)">
-                <circle r="58" fill={focusMode ? "#111827" : "#fff"} />
-                <circle r="54" fill="none" stroke={focusMode ? "#374151" : "#f3e8ff"} strokeWidth="12" />
-                <circle r="54" fill="none" stroke="url(#g1)" strokeWidth="12" strokeLinecap="round"
-                  strokeDasharray={dash} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 400ms linear' }} />
-              </g>
-            </svg>
+          <div className={`relative flex-shrink-0 ${focusMode ? 'w-96 h-96' : 'w-56 h-56'} transition-all duration-500`}>
+            {(!focusOptions.hideProgress || !focusMode) && (
+              <svg viewBox="0 0 140 140" className="w-full h-full">
+                <defs>
+                  <linearGradient id="g1" x1="0%" x2="100%">
+                    <stop offset="0%" stopColor={focusMode ? "#374151" : "#fb7185"} />
+                    <stop offset="100%" stopColor={focusMode ? "#1f2937" : "#7c3aed"} />
+                  </linearGradient>
+                </defs>
+                <g transform="translate(70,70)">
+                  <circle r="58" fill={focusMode ? "#111827" : "#fff"} />
+                  <circle r="54" fill="none" stroke={focusMode ? "#374151" : "#f3e8ff"} strokeWidth="12" />
+                  <circle r="54" fill="none" stroke="url(#g1)" strokeWidth="12" strokeLinecap="round"
+                    strokeDasharray={dash} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 400ms linear' }} />
+                </g>
+              </svg>
+            )}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <div className={`font-bold ${focusMode ? 'text-6xl text-white' : 'text-4xl text-gray-800'} transition-all duration-500`}>{fmt(secondsLeft)}</div>
+              <div className={`font-bold transition-all duration-500 ${
+                focusMode 
+                  ? `${focusOptions.minimalistMode ? 'text-8xl' : 'text-7xl'} text-white` 
+                  : 'text-4xl text-gray-800'
+              }`}>
+                {fmt(secondsLeft)}
+              </div>
               {!focusMode && <div className="text-xs text-gray-500 mt-1">{Math.round(progress*100)}% done</div>}
-              {focusMode && (
-                <div className="text-lg text-gray-400 mt-2 capitalize">{phase === 'work' ? 'Focus Time' : 'Break Time'}</div>
+              {focusMode && !focusOptions.minimalistMode && (
+                <div className="text-2xl text-gray-400 mt-4 capitalize">
+                  {phase === 'work' ? 'Focus Time' : 'Break Time'}
+                </div>
               )}
             </div>
           </div>
@@ -234,12 +341,20 @@ export default function PomodoroTimer() {
           
           {/* Focus Mode Controls */}
           {focusMode && (
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-4">
-              <button onClick={startPause} className={`px-6 py-3 rounded-xl font-semibold shadow-sm transition text-lg ${running ? 'bg-yellow-600 hover:bg-yellow-500 text-white' : 'bg-green-600 hover:bg-green-500 text-white'}`}>
+            <div className={`absolute flex gap-4 ${
+              focusOptions.minimalistMode 
+                ? 'bottom-16 left-1/2 transform -translate-x-1/2' 
+                : 'bottom-12 left-1/2 transform -translate-x-1/2'
+            }`}>
+              <button onClick={startPause} className={`px-8 py-4 rounded-xl font-semibold shadow-sm transition text-xl ${running ? 'bg-yellow-600 hover:bg-yellow-500 text-white' : 'bg-green-600 hover:bg-green-500 text-white'}`}>
                 {running ? 'Pause' : 'Start'}
               </button>
-              <button onClick={reset} className="px-6 py-3 rounded-xl bg-gray-700 hover:bg-gray-600 text-white shadow">Reset</button>
-              <button onClick={skip} className="px-6 py-3 rounded-xl bg-gray-700 hover:bg-gray-600 text-white shadow">Skip</button>
+              {!focusOptions.minimalistMode && (
+                <>
+                  <button onClick={reset} className="px-6 py-4 rounded-xl bg-gray-700 hover:bg-gray-600 text-white shadow text-lg">Reset</button>
+                  <button onClick={skip} className="px-6 py-4 rounded-xl bg-gray-700 hover:bg-gray-600 text-white shadow text-lg">Skip</button>
+                </>
+              )}
             </div>
           )}
         </div>
