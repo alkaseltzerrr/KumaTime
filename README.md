@@ -69,6 +69,7 @@ VITE_API_URL=http://localhost:3000
 ```
 
 ## Troubleshooting 🛠️ (；・∀・)
+- **Browser compatibility**: This app is optimized for Chrome/Chromium-based browsers. Firefox may have issues with animations and styling.
 - Backend DB errors: check `backend/.env` and Postgres is running.
 - Frontend build errors: run `npm install` in `frontend/` and check Tailwind/PostCSS.
 - If things break, remove `node_modules` and reinstall.
