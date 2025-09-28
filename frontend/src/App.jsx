@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { FocusModeProvider } from './contexts/FocusModeContext';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import './App.css';
@@ -25,17 +26,19 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="font-cute min-h-screen">
-          <Routes>
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </div>
+        <FocusModeProvider>
+          <div className="font-cute min-h-screen">
+            <Routes>
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/login" element={<Login />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </FocusModeProvider>
       </AuthProvider>
     </Router>
   );
