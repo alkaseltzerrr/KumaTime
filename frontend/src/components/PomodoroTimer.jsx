@@ -57,6 +57,7 @@ export default function PomodoroTimer() {
   const [running, setRunning] = useState(false)
   const [cycleCount, setCycleCount] = useState(0)
   const [showFocusOptions, setShowFocusOptions] = useState(false)
+  const [showConfig, setShowConfig] = useState(false)
   const [focusOptions, setFocusOptions] = useState({
     fullscreen: false,
     hideProgress: false,
@@ -160,7 +161,7 @@ export default function PomodoroTimer() {
   const dashOffset = C * (1 - Math.min(Math.max(progress, 0), 1))
 
   return (
-    <div className={`w-full h-full p-2 relative ${focusMode ? 'fixed inset-0 z-50 p-8 flex items-center justify-center' : ''}`}>
+    <div className={`w-full h-full p-2 relative ${focusMode ? 'fixed inset-0 z-50 p-0' : ''}`}>
       {/* Focus Mode Toggle with Options - Outside the main div when not in focus mode */}
       {!focusMode && (
         <div className="absolute top-0 right-0 z-10">
@@ -281,10 +282,10 @@ export default function PomodoroTimer() {
         </div>
       )}
       
-      <div className={`bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6 relative overflow-hidden transition-all duration-500 ${
+      <div className={`relative overflow-hidden transition-all duration-500 ${
         focusMode 
-          ? 'bg-gradient-to-br from-gray-900 to-black rounded-3xl max-w-6xl w-full max-h-screen' 
-          : 'w-full h-full'
+          ? 'bg-gradient-to-br from-gray-900 to-black w-full h-screen flex items-center justify-center' 
+          : 'w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6'
       }`}>
         {!focusMode && <div className="absolute -right-16 -top-16 opacity-20 text-9xl">🐻</div>}
         
@@ -326,8 +327,8 @@ export default function PomodoroTimer() {
           )}
         </div>
 
-        <div className={`flex items-center gap-6 h-full ${focusMode ? 'justify-center' : ''}`}>
-          <div className={`relative flex-shrink-0 transition-all duration-700 ease-out ${focusMode ? 'w-80 h-80 animate-grow' : 'w-56 h-56'}`}>
+        <div className={`flex items-center gap-6 h-full ${focusMode ? 'justify-center flex-col' : ''}`}>
+          <div className={`relative flex-shrink-0 transition-all duration-700 ease-out ${focusMode ? 'w-96 h-96 animate-grow' : 'w-56 h-56'}`}>
             {(!focusOptions.hideProgress || !focusMode) && (
               <svg viewBox="0 0 140 140" className={`w-full h-full transition-all duration-500 ${focusMode ? 'drop-shadow-2xl' : ''}`}>
                 <defs>
@@ -397,10 +398,10 @@ export default function PomodoroTimer() {
           
           {/* Focus Mode Controls */}
           {focusMode && (
-            <div className={`absolute flex gap-6 animate-slide-up ${
+            <div className={`flex gap-6 animate-slide-up mt-12 ${
               focusOptions.minimalistMode 
-                ? 'bottom-20 left-1/2 transform -translate-x-1/2' 
-                : 'bottom-16 left-1/2 transform -translate-x-1/2'
+                ? '' 
+                : ''
             }`}>
               <button onClick={startPause} className={`px-10 py-5 rounded-2xl font-bold shadow-lg transition-all duration-300 text-xl transform hover:scale-110 active:scale-95 ${
                 running 
@@ -423,59 +424,105 @@ export default function PomodoroTimer() {
           )}
         </div>
 
-        <details className={`mt-4 bg-white/30 rounded-lg p-3 ${focusMode ? 'hidden' : ''}`}>
-          <summary className="cursor-pointer font-medium">Config</summary>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <label className="text-sm text-gray-600">Work (min)
-              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={180} value={Math.round(config.work/60)} onChange={(e)=>{
-                const v = Math.max(1, Number(e.target.value)||25)
-                setConfig((c)=>({ ...c, work: v*60 }))
-                if (phase==='work') setSecondsLeft(v*60)
-              }} />
-            </label>
-            <label className="text-sm text-gray-600">Short break (min)
-              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={60} value={Math.round(config.shortBreak/60)} onChange={(e)=>{
-                const v = Math.max(1, Number(e.target.value)||5)
-                setConfig((c)=>({ ...c, shortBreak: v*60 }))
-                if (phase==='shortBreak') setSecondsLeft(v*60)
-              }} />
-            </label>
-            <label className="text-sm text-gray-600">Long break (min)
-              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={120} value={Math.round(config.longBreak/60)} onChange={(e)=>{
-                const v = Math.max(1, Number(e.target.value)||15)
-                setConfig((c)=>({ ...c, longBreak: v*60 }))
-                if (phase==='longBreak') setSecondsLeft(v*60)
-              }} />
-            </label>
-            <label className="text-sm text-gray-600">Cycles before long break
-              <input className="mt-1 block w-full rounded border-gray-200 p-2" type="number" min={1} max={12} value={config.cyclesBeforeLongBreak} onChange={(e)=>{
-                const v = Math.max(1, Number(e.target.value)||4)
-                setConfig((c)=>({ ...c, cyclesBeforeLongBreak: v }))
-              }} />
-            </label>
+        <details className={`mt-4 bg-white/30 rounded-lg overflow-hidden transition-all duration-300 ${focusMode ? 'hidden' : ''}`} 
+          open={showConfig} 
+          onToggle={(e) => setShowConfig(e.target.open)}>
+          <summary className="cursor-pointer font-medium p-3 hover:bg-white/40 transition-all duration-300 flex items-center justify-between">
+            <span>⚙️ Config</span>
+            <span className={`transform transition-transform duration-300 ${showConfig ? 'rotate-180' : ''}`}>▼</span>
+          </summary>
+          <div className={`transition-all duration-500 ease-out ${
+            showConfig 
+              ? 'max-h-96 opacity-100 translate-y-0' 
+              : 'max-h-0 opacity-0 -translate-y-4'
+          } overflow-hidden`}>
+            <div className="p-3 pt-0">
+              <div className="grid grid-cols-2 gap-3 animate-stagger-in">
+                <label className="text-sm text-gray-600 transition-all duration-300 hover:scale-105">Work (min)
+                  <input className="mt-1 block w-full rounded border-gray-200 p-2 transition-all duration-300 focus:ring-2 focus:ring-pink-300 focus:border-pink-400" type="number" min={1} max={180} value={Math.round(config.work/60)} onChange={(e)=>{
+                    const v = Math.max(1, Number(e.target.value)||25)
+                    setConfig((c)=>({ ...c, work: v*60 }))
+                    if (phase==='work') setSecondsLeft(v*60)
+                  }} />
+                </label>
+                <label className="text-sm text-gray-600 transition-all duration-300 hover:scale-105">Short break (min)
+                  <input className="mt-1 block w-full rounded border-gray-200 p-2 transition-all duration-300 focus:ring-2 focus:ring-green-300 focus:border-green-400" type="number" min={1} max={60} value={Math.round(config.shortBreak/60)} onChange={(e)=>{
+                    const v = Math.max(1, Number(e.target.value)||5)
+                    setConfig((c)=>({ ...c, shortBreak: v*60 }))
+                    if (phase==='shortBreak') setSecondsLeft(v*60)
+                  }} />
+                </label>
+                <label className="text-sm text-gray-600 transition-all duration-300 hover:scale-105">Long break (min)
+                  <input className="mt-1 block w-full rounded border-gray-200 p-2 transition-all duration-300 focus:ring-2 focus:ring-blue-300 focus:border-blue-400" type="number" min={1} max={120} value={Math.round(config.longBreak/60)} onChange={(e)=>{
+                    const v = Math.max(1, Number(e.target.value)||15)
+                    setConfig((c)=>({ ...c, longBreak: v*60 }))
+                    if (phase==='longBreak') setSecondsLeft(v*60)
+                  }} />
+                </label>
+                <label className="text-sm text-gray-600 transition-all duration-300 hover:scale-105">Cycles before long break
+                  <input className="mt-1 block w-full rounded border-gray-200 p-2 transition-all duration-300 focus:ring-2 focus:ring-purple-300 focus:border-purple-400" type="number" min={1} max={12} value={config.cyclesBeforeLongBreak} onChange={(e)=>{
+                    const v = Math.max(1, Number(e.target.value)||4)
+                    setConfig((c)=>({ ...c, cyclesBeforeLongBreak: v }))
+                  }} />
+                </label>
+              </div>
+            </div>
           </div>
         </details>
 
         <div className={focusMode ? 'hidden' : ''}>
-          <SessionHistory />
+          <AnimatedSessionHistory />
         </div>
       </div>
     </div>
   )
 }
 
-function SessionHistory(){
+function AnimatedSessionHistory(){
   const [items, setItems] = useState(()=>{
     try { return JSON.parse(window.localStorage.getItem('kt.sessions')||'[]').reverse() } catch { return [] }
   })
+  const [showHistory, setShowHistory] = useState(false)
+  
   return (
-    <details className="kt-history">
-      <summary>History ({items.length})</summary>
-      <ul>
-        {items.map((s, i)=> (
-          <li key={i}>{new Date(s.finishedAt).toLocaleString()} — {s.type} {Math.round(s.durationSec/60)}m</li>
-        ))}
-      </ul>
+    <details className="kt-history mt-4 bg-white/30 rounded-lg overflow-hidden transition-all duration-300" 
+      open={showHistory} 
+      onToggle={(e) => setShowHistory(e.target.open)}>
+      <summary className="cursor-pointer font-medium p-3 hover:bg-white/40 transition-all duration-300 flex items-center justify-between">
+        <span>📈 History ({items.length})</span>
+        <span className={`transform transition-transform duration-300 ${showHistory ? 'rotate-180' : ''}`}>▼</span>
+      </summary>
+      <div className={`transition-all duration-500 ease-out ${
+        showHistory 
+          ? 'max-h-60 opacity-100 translate-y-0' 
+          : 'max-h-0 opacity-0 -translate-y-4'
+      } overflow-hidden`}>
+        <div className="p-3 pt-0">
+          <ul className="space-y-2 max-h-48 overflow-y-auto">
+            {items.map((s, i)=> (
+              <li key={i} className="p-2 bg-white/50 rounded text-sm hover:bg-white/70 transition-all duration-300 hover:scale-[1.02] animate-fade-in" 
+                style={{animationDelay: `${i * 0.1}s`}}>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">
+                    {s.type === 'work' ? '🎯' : '🌸'} {s.type} session
+                  </span>
+                  <span className="text-xs text-gray-600">
+                    {Math.round(s.durationSec/60)}min
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  {new Date(s.finishedAt).toLocaleString()}
+                </div>
+              </li>
+            ))}
+            {items.length === 0 && (
+              <li className="p-4 text-center text-gray-500 text-sm animate-fade-in">
+                🌱 No sessions yet. Start your first focus session!
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
     </details>
   )
 }
