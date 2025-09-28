@@ -184,7 +184,7 @@ export default function PomodoroTimer() {
     <div className={`${focusMode ? 'fixed inset-0 z-50 bg-gradient-to-br from-gray-900 to-black' : 'w-full h-full p-2 relative'}`}>
       {/* Focus Mode Toggle with Options - Outside the main div when not in focus mode */}
       {!focusMode && (
-        <div className="absolute top-0 right-0 z-10">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-10">
           <div className="relative">
             <button 
               onClick={() => setShowFocusOptions(!showFocusOptions)}
@@ -194,7 +194,7 @@ export default function PomodoroTimer() {
             </button>
             
             {/* Focus Options Dropdown */}
-            <div className={`absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-pink-100 overflow-hidden transition-all duration-700 ease-in-out ${
+            <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-2xl shadow-2xl border border-pink-100 overflow-hidden transition-all duration-700 ease-in-out ${
               showFocusOptions 
                 ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' 
                 : 'opacity-0 scale-95 -translate-y-4 pointer-events-none'
