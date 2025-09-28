@@ -90,44 +90,13 @@ const Dashboard = () => {
         </div>
       )}
 
-      <div className={`max-w-7xl mx-auto ${focusMode ? 'h-screen flex items-center justify-center' : 'grid grid-cols-1 lg:grid-cols-3 gap-8'}`}>
-        {/* Main Content */}
-        <div className={focusMode ? 'w-full max-w-4xl' : 'lg:col-span-2 space-y-8'}>
-          {/* Virtual Buddy Card - Hidden in focus mode */}
-          {!focusMode && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8"
-            >
-              <VirtualBuddy 
-                mood={buddyMood}
-                level={user?.buddy_level || 1}
-                happiness={user?.buddy_happiness || 50}
-              />
-            </motion.div>
-          )}
-
-          {/* Timer Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: focusMode ? 0 : 0.1 }}
-            className={focusMode ? 'w-full h-full' : 'bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8'}
-          >
-            <PomodoroTimer 
-              onSessionComplete={handleSessionComplete}
-              onMoodChange={setBuddyMood}
-            />
-          </motion.div>
-        </div>
-
-        {/* Stats Sidebar - Hidden in focus mode */}
+      <div className={`max-w-7xl mx-auto ${focusMode ? 'h-screen flex items-center justify-center' : 'grid grid-cols-1 xl:grid-cols-4 gap-8'}`}>
+        {/* Left Sidebar - Stats Only */}
         {!focusMode && (
-          <div className="space-y-6">
+          <div className="xl:col-span-1 space-y-6">
             {/* User Stats Card */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
               className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6"
@@ -181,7 +150,43 @@ const Dashboard = () => {
                 </div>
               </div>
             </motion.div>
+          </div>
+        )}
 
+        {/* Main Content */}
+        <div className={focusMode ? 'w-full max-w-4xl' : 'xl:col-span-2 space-y-8'}>
+          {/* Virtual Buddy Card - Hidden in focus mode */}
+          {!focusMode && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8"
+            >
+              <VirtualBuddy 
+                mood={buddyMood}
+                level={user?.buddy_level || 1}
+                happiness={user?.buddy_happiness || 50}
+              />
+            </motion.div>
+          )}
+
+          {/* Timer Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: focusMode ? 0 : 0.1 }}
+            className={focusMode ? 'w-full h-full' : 'bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8'}
+          >
+            <PomodoroTimer 
+              onSessionComplete={handleSessionComplete}
+              onMoodChange={setBuddyMood}
+            />
+          </motion.div>
+        </div>
+
+        {/* Right Sidebar - Badges and Tips */}
+        {!focusMode && (
+          <div className="xl:col-span-1 space-y-6">
             {/* Badges Card */}
             {isAuthenticated && user?.badges && user.badges.length > 0 && (
               <motion.div
