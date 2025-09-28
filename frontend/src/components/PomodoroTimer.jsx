@@ -369,8 +369,8 @@ export default function PomodoroTimer() {
                 <button onClick={startPause} className={`flex-1 px-4 py-2 rounded-xl font-semibold shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg transform active:scale-95 ${running ? 'bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white' : 'bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white'}`}>
                   {running ? '⏸ Pause' : '▶ Start'}
                 </button>
-                <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-300 hover:scale-105 transform active:scale-95">🔄 Reset</button>
-                <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-300 hover:scale-105 transform active:scale-95">⏭️ Skip</button>
+                <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-300 hover:scale-105 transform active:scale-95">🌸 Reset</button>
+                <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-300 hover:scale-105 transform active:scale-95">🐾 Skip</button>
               </div>
 
               <div className="text-sm text-gray-600 mb-3 animate-fade-in">Quick controls</div>
@@ -408,10 +408,10 @@ export default function PomodoroTimer() {
               {!focusOptions.minimalistMode && (
                 <>
                   <button onClick={reset} className="px-10 py-6 rounded-2xl bg-gray-700 hover:bg-gray-600 text-white shadow-2xl text-xl font-semibold transition-all duration-300 transform hover:scale-110 active:scale-95 hover:shadow-3xl">
-                    🔄 Reset
+                    🌸 Reset
                   </button>
                   <button onClick={skip} className="px-10 py-6 rounded-2xl bg-gray-700 hover:bg-gray-600 text-white shadow-2xl text-xl font-semibold transition-all duration-300 transform hover:scale-110 active:scale-95 hover:shadow-3xl">
-                    ⏭ Skip
+                    🐾 Skip
                   </button>
                 </>
               )}
