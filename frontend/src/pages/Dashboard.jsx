@@ -458,7 +458,7 @@ const Dashboard = () => {
                 </h3>
                 <button 
                   onClick={() => setCurrentTip(getRandomTip())}
-                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300 text-sm hover:scale-110 transform"
+                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300 text-sm hover:scale-[1.05] transform"
                   title="Get new tip"
                 >
                   🔄

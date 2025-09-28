@@ -168,7 +168,7 @@ export default function PomodoroTimer() {
           <div className="relative">
             <button 
               onClick={() => setShowFocusOptions(!showFocusOptions)}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-500 bg-gradient-to-r from-pink-100 to-purple-100 text-gray-700 hover:from-pink-200 hover:to-purple-200 shadow-sm hover:shadow-md transform hover:scale-105"
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-500 bg-gradient-to-r from-pink-100 to-purple-100 text-gray-700 hover:from-pink-200 hover:to-purple-200 shadow-sm hover:shadow-md transform hover:scale-[1.02]"
             >
               🔍 Focus Mode {showFocusOptions ? '▲' : '▼'}
             </button>
@@ -265,13 +265,13 @@ export default function PomodoroTimer() {
                 <div className="flex gap-3 mt-6">
                   <button 
                     onClick={handleFocusModeToggle}
-                    className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl text-sm font-semibold hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-500 shadow-lg hover:shadow-xl"
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl text-sm font-semibold hover:from-blue-600 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-500 shadow-lg hover:shadow-xl"
                   >
                     🚀 Enter Focus
                   </button>
                   <button 
                     onClick={() => setShowFocusOptions(false)}
-                    className="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-all duration-500 transform hover:scale-105"
+                    className="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-all duration-500 transform hover:scale-[1.02]"
                   >
                     Cancel
                   </button>
@@ -294,7 +294,7 @@ export default function PomodoroTimer() {
           <div className="absolute top-8 right-8 animate-fade-in z-10">
             <button 
               onClick={handleFocusModeToggle}
-              className="px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 bg-gray-700/80 backdrop-blur-sm text-white hover:bg-gray-600/80 transform hover:scale-110 shadow-lg hover:shadow-xl"
+              className="px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 bg-gray-700/80 backdrop-blur-sm text-white hover:bg-gray-600/80 transform hover:scale-[1.03] shadow-lg hover:shadow-xl"
             >
               🔍 Exit Focus
             </button>
@@ -309,7 +309,7 @@ export default function PomodoroTimer() {
                 KumaTime
               </h2>
               <div className="mt-1 inline-flex items-center gap-2 animate-slide-in">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 ${
+                <span className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-[1.02] ${
                   phase === 'work' ? 'bg-red-100 text-red-700' : 
                   phase === 'shortBreak' ? 'bg-green-100 text-green-700' : 
                   'bg-blue-100 text-blue-700'
@@ -366,28 +366,28 @@ export default function PomodoroTimer() {
           {!focusMode && (
             <div className="flex-1 animate-slide-in-right">
               <div className="flex gap-3 mb-3">
-                <button onClick={startPause} className={`flex-1 px-4 py-2 rounded-xl font-semibold shadow-sm transition-all duration-500 hover:scale-105 hover:shadow-lg transform active:scale-95 ${running ? 'bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white' : 'bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white'}`}>
+                <button onClick={startPause} className={`flex-1 px-4 py-2 rounded-xl font-semibold shadow-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-lg transform active:scale-95 ${running ? 'bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white' : 'bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white'}`}>
                   {running ? '⏸ Pause' : '▶ Start'}
                 </button>
-                <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-500 hover:scale-105 transform active:scale-95">🌸 Reset</button>
-                <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-500 hover:scale-105 transform active:scale-95">🐾 Skip</button>
+                <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-500 hover:scale-[1.02] transform active:scale-95">🌸 Reset</button>
+                <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-500 hover:scale-[1.02] transform active:scale-95">🐾 Skip</button>
               </div>
 
               <div className="text-sm text-gray-600 mb-3 animate-fade-in">Quick controls</div>
               <div className="grid grid-cols-2 gap-2 animate-stagger-in">
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-105 transform">
+                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
                   <div className="text-xs text-gray-500">Work</div>
                   <div className="font-medium">{Math.round(config.work/60)} min</div>
                 </div>
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-105 transform">
+                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
                   <div className="text-xs text-gray-500">Break</div>
                   <div className="font-medium">{Math.round(config.shortBreak/60)} min</div>
                 </div>
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-105 transform">
+                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
                   <div className="text-xs text-gray-500">Long</div>
                   <div className="font-medium">{Math.round(config.longBreak/60)} min</div>
                 </div>
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-105 transform">
+                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
                   <div className="text-xs text-gray-500">Every</div>
                   <div className="font-medium">{config.cyclesBeforeLongBreak} cycles</div>
                 </div>
@@ -398,7 +398,7 @@ export default function PomodoroTimer() {
           {/* Focus Mode Controls */}
           {focusMode && (
             <div className="flex gap-8 animate-slide-up mt-16">
-              <button onClick={startPause} className={`px-12 py-6 rounded-2xl font-bold shadow-2xl transition-all duration-500 text-2xl transform hover:scale-110 active:scale-95 ${
+              <button onClick={startPause} className={`px-12 py-6 rounded-2xl font-bold shadow-2xl transition-all duration-500 text-2xl transform hover:scale-[1.03] active:scale-95 ${
                 running 
                   ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white shadow-yellow-500/25' 
                   : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white shadow-green-500/25'
@@ -407,10 +407,10 @@ export default function PomodoroTimer() {
               </button>
               {!focusOptions.minimalistMode && (
                 <>
-                  <button onClick={reset} className="px-10 py-6 rounded-2xl bg-gray-700 hover:bg-gray-600 text-white shadow-2xl text-xl font-semibold transition-all duration-500 transform hover:scale-110 active:scale-95 hover:shadow-3xl">
+                  <button onClick={reset} className="px-10 py-6 rounded-2xl bg-gray-700 hover:bg-gray-600 text-white shadow-2xl text-xl font-semibold transition-all duration-500 transform hover:scale-[1.03] active:scale-95 hover:shadow-3xl">
                     🌸 Reset
                   </button>
-                  <button onClick={skip} className="px-10 py-6 rounded-2xl bg-gray-700 hover:bg-gray-600 text-white shadow-2xl text-xl font-semibold transition-all duration-500 transform hover:scale-110 active:scale-95 hover:shadow-3xl">
+                  <button onClick={skip} className="px-10 py-6 rounded-2xl bg-gray-700 hover:bg-gray-600 text-white shadow-2xl text-xl font-semibold transition-all duration-500 transform hover:scale-[1.03] active:scale-95 hover:shadow-3xl">
                     🐾 Skip
                   </button>
                 </>
@@ -427,7 +427,7 @@ export default function PomodoroTimer() {
               <span className={`transition-transform duration-500 ${showConfig ? 'rotate-90 scale-110' : ''}`}>⚙️</span>
               Configuration
             </span>
-            <span className={`transform transition-all duration-500 text-gray-500 group-hover:text-gray-700 ${showConfig ? 'rotate-180 scale-110' : 'group-hover:scale-110'}`}>
+            <span className={`transform transition-all duration-500 text-gray-500 group-hover:text-gray-700 ${showConfig ? 'rotate-180 scale-105' : 'group-hover:scale-105'}`}>
               ▼
             </span>
           </summary>
@@ -481,7 +481,7 @@ export default function PomodoroTimer() {
                   }
                 ].map((field, index) => (
                   <div key={field.label} 
-                    className="transition-all duration-500 hover:scale-105 transform"
+                    className="transition-all duration-500 hover:scale-[1.02] transform"
                     style={{animationDelay: `${index * 100}ms`}}>
                     <label className="block">
                       <span className="text-sm font-medium text-gray-700 mb-2 block">
@@ -530,7 +530,7 @@ export default function PomodoroTimer() {
                   ].map((preset, index) => (
                     <button
                       key={preset.name}
-                      className="px-3 py-1 text-xs rounded-full bg-white/60 hover:bg-white/80 text-gray-700 transition-all duration-300 hover:scale-110 transform hover:shadow-md"
+                      className="px-3 py-1 text-xs rounded-full bg-white/60 hover:bg-white/80 text-gray-700 transition-all duration-300 hover:scale-[1.02] transform hover:shadow-md"
                       style={{animationDelay: `${400 + index * 100}ms`}}
                       onClick={() => {
                         setConfig(c => ({
