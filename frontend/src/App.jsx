@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { FocusModeProvider } from './contexts/FocusModeContext';
 import MenuBar from './components/MenuBar';
+import WelcomePopup from './components/WelcomePopup';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import './App.css';
@@ -30,6 +31,7 @@ function App() {
         <FocusModeProvider>
           <div className="font-cute min-h-screen">
             <MenuBar />
+            <WelcomePopup />
             <Routes>
               <Route path="/" element={
                 <ProtectedRoute>

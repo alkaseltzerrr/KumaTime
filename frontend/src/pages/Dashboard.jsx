@@ -14,11 +14,266 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [badges, setBadges] = useState([]);
   const [idleTimeout, setIdleTimeout] = useState(null);
+  const [currentTip, setCurrentTip] = useState(null);
+
+  // Study tips collection
+  const studyTips = [
+    {
+      icon: "🧠",
+      title: "Brain Break",
+      tip: "Take a 5-minute walk between study sessions to boost memory retention and creativity!"
+    },
+    {
+      icon: "💧",
+      title: "Stay Hydrated",
+      tip: "Drink water regularly! Dehydration can reduce concentration by up to 12%."
+    },
+    {
+      icon: "🌱",
+      title: "The 2-Minute Rule",
+      tip: "If a task takes less than 2 minutes, do it immediately instead of adding it to your todo list."
+    },
+    {
+      icon: "🎯",
+      title: "Active Recall",
+      tip: "Test yourself without looking at notes. It's more effective than re-reading material!"
+    },
+    {
+      icon: "🌙",
+      title: "Sleep Smart",
+      tip: "Get 7-9 hours of sleep. Your brain consolidates memories while you rest!"
+    },
+    {
+      icon: "🍃",
+      title: "Fresh Air",
+      tip: "Study near a window or in a well-ventilated room. Fresh air improves focus and alertness."
+    },
+    {
+      icon: "📱",
+      title: "Phone Freedom",
+      tip: "Put your phone in another room while studying. Even its presence can be distracting!"
+    },
+    {
+      icon: "🎵",
+      title: "Music Magic",
+      tip: "Try instrumental music or nature sounds. Lyrics can interfere with reading comprehension."
+    },
+    {
+      icon: "⏰",
+      title: "Time Blocking",
+      tip: "Schedule specific time slots for different subjects. Your brain loves routine!"
+    },
+    {
+      icon: "🏃",
+      title: "Exercise Boost",
+      tip: "20 minutes of exercise before studying can improve focus for up to 2 hours!"
+    },
+    {
+      icon: "🍎",
+      title: "Brain Food",
+      tip: "Eat blueberries, nuts, or dark chocolate for a natural cognitive boost!"
+    },
+    {
+      icon: "📝",
+      title: "Write by Hand",
+      tip: "Taking notes by hand improves learning and memory better than typing."
+    },
+    {
+      icon: "🌅",
+      title: "Morning Power",
+      tip: "Your brain is sharpest 2-4 hours after waking up. Schedule tough subjects then!"
+    },
+    {
+      icon: "🔄",
+      title: "Spaced Repetition",
+      tip: "Review material after 1 day, 3 days, 1 week, and 1 month for long-term retention."
+    },
+    {
+      icon: "🎨",
+      title: "Visual Learning",
+      tip: "Create mind maps or diagrams. Visual representations help remember complex information."
+    },
+    {
+      icon: "🤝",
+      title: "Study Buddy",
+      tip: "Explain concepts to someone else. Teaching others is one of the best ways to learn!"
+    },
+    {
+      icon: "🎪",
+      title: "Change Scenery",
+      tip: "Study in different locations. Your brain creates stronger memories with varied environments."
+    },
+    {
+      icon: "🍋",
+      title: "Scent Power",
+      tip: "Try peppermint or lemon scents while studying. They can improve alertness and memory!"
+    },
+    {
+      icon: "🌸",
+      title: "Cherry Blossom Method",
+      tip: "Study for 25 minutes, then take a 5-minute nature break. Fresh perspectives bloom with rest!"
+    },
+    {
+      icon: "🎭",
+      title: "Feynman Technique",
+      tip: "Explain concepts in simple terms as if teaching a child. If you can't, you don't truly understand it yet."
+    },
+    {
+      icon: "🌈",
+      title: "Color Coding",
+      tip: "Use different colors for different topics. Your brain processes colors faster than text!"
+    },
+    {
+      icon: "🧘",
+      title: "Mindful Moments",
+      tip: "Take 3 deep breaths before starting each study session. It primes your brain for focus."
+    },
+    {
+      icon: "🔥",
+      title: "Energy Management",
+      tip: "Study your hardest subjects when you have the most energy, not necessarily in the morning."
+    },
+    {
+      icon: "🎲",
+      title: "Random Review",
+      tip: "Shuffle your flashcards or topics randomly. Your brain learns better with unpredictable patterns!"
+    },
+    {
+      icon: "🌊",
+      title: "Wave Learning",
+      tip: "Alternate between focused learning and relaxed review. Like waves, learning comes in cycles."
+    },
+    {
+      icon: "🎪",
+      title: "The 50/10 Rule",
+      tip: "For every 50 minutes of study, take a 10-minute break. Your focus will thank you!"
+    },
+    {
+      icon: "🌟",
+      title: "Reward System",
+      tip: "Give yourself small rewards after completing study goals. Positive reinforcement works!"
+    },
+    {
+      icon: "🦋",
+      title: "Butterfly Effect",
+      tip: "Small, consistent daily study habits create massive long-term learning results."
+    },
+    {
+      icon: "🎯",
+      title: "Target Practice",
+      tip: "Set specific, measurable study goals. 'Read Chapter 5' is better than 'study biology'."
+    },
+    {
+      icon: "🌱",
+      title: "Growth Mindset",
+      tip: "Replace 'I can't do this' with 'I can't do this YET'. Your brain is always growing!"
+    },
+    {
+      icon: "🎪",
+      title: "Circus Method",
+      tip: "Juggle 3 different subjects in one session. Variety keeps your brain engaged and alert."
+    },
+    {
+      icon: "🌙",
+      title: "Sleep Learning",
+      tip: "Review material right before bed. Your brain processes information while you sleep!"
+    },
+    {
+      icon: "🎨",
+      title: "Doodle Power",
+      tip: "Doodling while listening can actually improve focus and information retention by 29%!"
+    },
+    {
+      icon: "🎵",
+      title: "Rhythm Study",
+      tip: "Try studying to a metronome or rhythmic background. Rhythm can enhance memory formation."
+    },
+    {
+      icon: "🌈",
+      title: "Rainbow Notes",
+      tip: "Use highlighters strategically: Yellow for key concepts, Pink for definitions, Blue for examples."
+    },
+    {
+      icon: "🎪",
+      title: "Teaching Theater",
+      tip: "Act out historical events or scientific processes. Physical movement enhances memory!"
+    },
+    {
+      icon: "🌸",
+      title: "Blossom Breaks",
+      tip: "During breaks, do something completely different from studying. Let your mind wander and reset."
+    },
+    {
+      icon: "🎯",
+      title: "Laser Focus",
+      tip: "Use the 'One Tab Rule' - close all browser tabs except what you're studying. Digital clutter hurts focus."
+    },
+    {
+      icon: "🌊",
+      title: "Flow State",
+      tip: "Find your optimal challenge level - not too easy (boring) or too hard (overwhelming)."
+    },
+    {
+      icon: "🎭",
+      title: "Multiple Perspectives",
+      tip: "Study the same topic from different angles or sources. Multiple viewpoints strengthen understanding."
+    },
+    {
+      icon: "🌟",
+      title: "Star Student",
+      tip: "Create a 'learning journal' - write down what you learned each day. Reflection deepens knowledge."
+    },
+    {
+      icon: "🎪",
+      title: "Memory Palace",
+      tip: "Link information to familiar places in your mind. Your spatial memory is incredibly powerful!"
+    },
+    {
+      icon: "🌸",
+      title: "Soft Focus",
+      tip: "Sometimes let your mind wander. Diffuse thinking helps connect ideas in creative ways."
+    },
+    {
+      icon: "🎵",
+      title: "Study Symphony",
+      tip: "Create different playlists for different subjects. Music can trigger subject-specific memory recall."
+    },
+    {
+      icon: "🌱",
+      title: "Seed Questions",
+      tip: "Start each study session by writing down questions you want answered. Curiosity drives learning!"
+    }
+  ];
+
+  // Enhanced random tip selection with shuffling
+  const [usedTipIndices, setUsedTipIndices] = useState(new Set());
+  
+  const getRandomTip = () => {
+    // If we've used all tips, reset the used indices
+    if (usedTipIndices.size >= studyTips.length) {
+      setUsedTipIndices(new Set());
+    }
+    
+    // Get available tip indices
+    const availableIndices = studyTips
+      .map((_, index) => index)
+      .filter(index => !usedTipIndices.has(index));
+    
+    // Select random index from available ones
+    const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    
+    // Mark this tip as used
+    setUsedTipIndices(prev => new Set([...prev, randomIndex]));
+    
+    return studyTips[randomIndex];
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchStats();
     }
+    // Set a random tip on component mount
+    setCurrentTip(getRandomTip());
   }, [isAuthenticated]);
 
   // Set buddy to sleepy after 5 minutes of idle
@@ -197,9 +452,20 @@ const Dashboard = () => {
               transition={{ delay: 0.4 }}
               className="bg-gradient-to-br from-pastel-mint/50 to-pastel-blue/50 rounded-3xl shadow-xl p-6"
             >
-              <h3 className="font-bold mb-2">💡 Study Tip</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold flex items-center gap-2">
+                  {currentTip?.icon} {currentTip?.title || "Study Tip"}
+                </h3>
+                <button 
+                  onClick={() => setCurrentTip(getRandomTip())}
+                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300 text-sm hover:scale-110 transform"
+                  title="Get new tip"
+                >
+                  🔄
+                </button>
+              </div>
               <p className="text-sm text-gray-700">
-                Take short breaks between focus sessions. Your buddy will keep you company!
+                {currentTip?.tip || "Loading tip..."}
               </p>
             </motion.div>
           </div>
