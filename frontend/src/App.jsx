@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { FocusModeProvider } from './contexts/FocusModeContext';
+import MenuBar from './components/MenuBar';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import './App.css';
@@ -28,6 +29,7 @@ function App() {
       <AuthProvider>
         <FocusModeProvider>
           <div className="font-cute min-h-screen">
+            <MenuBar />
             <Routes>
               <Route path="/" element={
                 <ProtectedRoute>
