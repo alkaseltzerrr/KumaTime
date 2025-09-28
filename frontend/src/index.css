@@ -99,47 +99,47 @@
 }
 
 .animate-fade-in {
-  animation: fade-in 0.5s ease-out;
+  animation: fade-in 0.8s ease-out;
 }
 
 .animate-fade-in-delay {
-  animation: fade-in 0.8s ease-out 0.3s both;
+  animation: fade-in 1.2s ease-out 0.5s both;
 }
 
 .animate-slide-in {
-  animation: slide-in 0.6s ease-out;
+  animation: slide-in 0.9s ease-out;
 }
 
 .animate-slide-in-right {
-  animation: slide-in-right 0.6s ease-out;
+  animation: slide-in-right 0.9s ease-out;
 }
 
 .animate-slide-up {
-  animation: slide-up 0.5s ease-out;
+  animation: slide-up 0.8s ease-out;
 }
 
 .animate-grow {
-  animation: grow 0.7s ease-out;
+  animation: grow 1s ease-out;
 }
 
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
 }
 
 .animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+  animation: pulse-glow 3s ease-in-out infinite;
 }
 
 .animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
+  animation: pulse-slow 4s ease-in-out infinite;
 }
 
 .animate-stagger-in {
-  animation: stagger-in 0.6s ease-out;
+  animation: stagger-in 0.8s ease-out;
 }
 
 .animate-stagger-in > * {
-  animation-delay: calc(var(--stagger-delay, 0) * 0.1s);
+  animation-delay: calc(var(--stagger-delay, 0) * 0.15s);
 }
 
 /* Cute hover effects for interactive elements */
