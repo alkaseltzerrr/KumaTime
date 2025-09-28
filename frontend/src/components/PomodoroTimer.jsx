@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useFocusMode } from '../contexts/FocusModeContext'
 
 // Simple localStorage-backed session store (fallbacks if storage is unavailable)
 function safeStorage() {
@@ -42,6 +43,7 @@ const defaultConfig = {
 
 export default function PomodoroTimer() {
   const storage = useMemo(safeStorage, [])
+  const { focusMode, toggleFocusMode } = useFocusMode()
   const [config, setConfig] = useState(() => {
     try {
       const raw = storage?.getItem('kt.timer.config')
@@ -124,78 +126,115 @@ export default function PomodoroTimer() {
 
   return (
     <div className="w-full h-full p-2">
-  <div className="w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6 relative overflow-hidden">
-        <div className="absolute -right-16 -top-16 opacity-20 text-9xl">🐻</div>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800">KumaTime</h2>
-            <div className="mt-1 inline-flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${phase === 'work' ? 'bg-red-100 text-red-700' : phase === 'shortBreak' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                {phase === 'work' ? 'Focus' : phase === 'shortBreak' ? 'Short Break' : 'Long Break'}
-              </span>
-              <span className="text-xs text-gray-500">Cycle {cycleCount}</span>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-500">Session</div>
-            <div className="text-lg font-semibold text-gray-700">{fmt(total)} total</div>
-          </div>
+      <div className={`w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6 relative overflow-hidden transition-all duration-500 ${focusMode ? 'bg-gradient-to-br from-gray-900 to-black' : ''}`}>
+        {!focusMode && <div className="absolute -right-16 -top-16 opacity-20 text-9xl">🐻</div>}
+        
+        {/* Focus Mode Toggle */}
+        <div className="absolute top-4 right-4">
+          <button 
+            onClick={toggleFocusMode}
+            className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
+              focusMode 
+                ? 'bg-gray-700 text-white hover:bg-gray-600' 
+                : 'bg-white/60 text-gray-700 hover:bg-white'
+            }`}
+          >
+            {focusMode ? '🔍 Exit Focus' : '🔍 Focus Mode'}
+          </button>
         </div>
 
-        <div className="flex items-center gap-6 h-full">
-          <div className="relative w-56 h-56 flex-shrink-0">
+        <div className={`flex items-center justify-between mb-4 ${focusMode ? 'text-white' : ''}`}>
+          <div>
+            <h2 className={`text-2xl font-bold ${focusMode ? 'text-white' : 'text-gray-800'}`}>KumaTime</h2>
+            <div className="mt-1 inline-flex items-center gap-2">
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                focusMode 
+                  ? (phase === 'work' ? 'bg-red-900/50 text-red-200' : phase === 'shortBreak' ? 'bg-green-900/50 text-green-200' : 'bg-blue-900/50 text-blue-200')
+                  : (phase === 'work' ? 'bg-red-100 text-red-700' : phase === 'shortBreak' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700')
+              }`}>
+                {phase === 'work' ? 'Focus' : phase === 'shortBreak' ? 'Short Break' : 'Long Break'}
+              </span>
+              <span className={`text-xs ${focusMode ? 'text-gray-400' : 'text-gray-500'}`}>Cycle {cycleCount}</span>
+            </div>
+          </div>
+          {!focusMode && (
+            <div className="text-right">
+              <div className="text-sm text-gray-500">Session</div>
+              <div className="text-lg font-semibold text-gray-700">{fmt(total)} total</div>
+            </div>
+          )}
+        </div>
+
+        <div className={`flex items-center gap-6 h-full ${focusMode ? 'justify-center' : ''}`}>
+          <div className={`relative flex-shrink-0 ${focusMode ? 'w-80 h-80' : 'w-56 h-56'} transition-all duration-500`}>
             <svg viewBox="0 0 140 140" className="w-full h-full">
               <defs>
                 <linearGradient id="g1" x1="0%" x2="100%">
-                  <stop offset="0%" stopColor="#fb7185" />
-                  <stop offset="100%" stopColor="#7c3aed" />
+                  <stop offset="0%" stopColor={focusMode ? "#374151" : "#fb7185"} />
+                  <stop offset="100%" stopColor={focusMode ? "#1f2937" : "#7c3aed"} />
                 </linearGradient>
               </defs>
               <g transform="translate(70,70)">
-                <circle r="58" fill="#fff" />
-                <circle r="54" fill="none" stroke="#f3e8ff" strokeWidth="12" />
+                <circle r="58" fill={focusMode ? "#111827" : "#fff"} />
+                <circle r="54" fill="none" stroke={focusMode ? "#374151" : "#f3e8ff"} strokeWidth="12" />
                 <circle r="54" fill="none" stroke="url(#g1)" strokeWidth="12" strokeLinecap="round"
                   strokeDasharray={dash} strokeDashoffset={dashOffset} style={{ transition: 'stroke-dashoffset 400ms linear' }} />
               </g>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <div className="text-4xl font-bold text-gray-800">{fmt(secondsLeft)}</div>
-              <div className="text-xs text-gray-500 mt-1">{Math.round(progress*100)}% done</div>
+              <div className={`font-bold ${focusMode ? 'text-6xl text-white' : 'text-4xl text-gray-800'} transition-all duration-500`}>{fmt(secondsLeft)}</div>
+              {!focusMode && <div className="text-xs text-gray-500 mt-1">{Math.round(progress*100)}% done</div>}
+              {focusMode && (
+                <div className="text-lg text-gray-400 mt-2 capitalize">{phase === 'work' ? 'Focus Time' : 'Break Time'}</div>
+              )}
             </div>
           </div>
 
-          <div className="flex-1">
-            <div className="flex gap-3 mb-3">
-              <button onClick={startPause} className={`flex-1 px-4 py-2 rounded-xl font-semibold shadow-sm transition ${running ? 'bg-yellow-400 hover:bg-yellow-500 text-white' : 'bg-green-500 hover:bg-green-600 text-white'}`}>
+          {!focusMode && (
+            <div className="flex-1">
+              <div className="flex gap-3 mb-3">
+                <button onClick={startPause} className={`flex-1 px-4 py-2 rounded-xl font-semibold shadow-sm transition ${running ? 'bg-yellow-400 hover:bg-yellow-500 text-white' : 'bg-green-500 hover:bg-green-600 text-white'}`}>
+                  {running ? 'Pause' : 'Start'}
+                </button>
+                <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow">Reset</button>
+                <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow">Skip</button>
+              </div>
+
+              <div className="text-sm text-gray-600 mb-3">Quick controls</div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="p-3 bg-white/60 rounded-lg">
+                  <div className="text-xs text-gray-500">Work</div>
+                  <div className="font-medium">{Math.round(config.work/60)} min</div>
+                </div>
+                <div className="p-3 bg-white/60 rounded-lg">
+                  <div className="text-xs text-gray-500">Break</div>
+                  <div className="font-medium">{Math.round(config.shortBreak/60)} min</div>
+                </div>
+                <div className="p-3 bg-white/60 rounded-lg">
+                  <div className="text-xs text-gray-500">Long</div>
+                  <div className="font-medium">{Math.round(config.longBreak/60)} min</div>
+                </div>
+                <div className="p-3 bg-white/60 rounded-lg">
+                  <div className="text-xs text-gray-500">Every</div>
+                  <div className="font-medium">{config.cyclesBeforeLongBreak} cycles</div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Focus Mode Controls */}
+          {focusMode && (
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-4">
+              <button onClick={startPause} className={`px-6 py-3 rounded-xl font-semibold shadow-sm transition text-lg ${running ? 'bg-yellow-600 hover:bg-yellow-500 text-white' : 'bg-green-600 hover:bg-green-500 text-white'}`}>
                 {running ? 'Pause' : 'Start'}
               </button>
-              <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow">Reset</button>
-              <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow">Skip</button>
+              <button onClick={reset} className="px-6 py-3 rounded-xl bg-gray-700 hover:bg-gray-600 text-white shadow">Reset</button>
+              <button onClick={skip} className="px-6 py-3 rounded-xl bg-gray-700 hover:bg-gray-600 text-white shadow">Skip</button>
             </div>
-
-            <div className="text-sm text-gray-600 mb-3">Quick controls</div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="p-3 bg-white/60 rounded-lg">
-                <div className="text-xs text-gray-500">Work</div>
-                <div className="font-medium">{Math.round(config.work/60)} min</div>
-              </div>
-              <div className="p-3 bg-white/60 rounded-lg">
-                <div className="text-xs text-gray-500">Break</div>
-                <div className="font-medium">{Math.round(config.shortBreak/60)} min</div>
-              </div>
-              <div className="p-3 bg-white/60 rounded-lg">
-                <div className="text-xs text-gray-500">Long</div>
-                <div className="font-medium">{Math.round(config.longBreak/60)} min</div>
-              </div>
-              <div className="p-3 bg-white/60 rounded-lg">
-                <div className="text-xs text-gray-500">Every</div>
-                <div className="font-medium">{config.cyclesBeforeLongBreak} cycles</div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
-        <details className="mt-4 bg-white/30 rounded-lg p-3">
+        <details className={`mt-4 bg-white/30 rounded-lg p-3 ${focusMode ? 'hidden' : ''}`}>
           <summary className="cursor-pointer font-medium">Config</summary>
           <div className="mt-3 grid grid-cols-2 gap-3">
             <label className="text-sm text-gray-600">Work (min)
@@ -228,7 +267,9 @@ export default function PomodoroTimer() {
           </div>
         </details>
 
-        <SessionHistory />
+        <div className={focusMode ? 'hidden' : ''}>
+          <SessionHistory />
+        </div>
       </div>
     </div>
   )
