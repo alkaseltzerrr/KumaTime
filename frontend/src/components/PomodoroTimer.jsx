@@ -349,14 +349,14 @@ export default function PomodoroTimer() {
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <div className={`font-bold transition-all duration-700 ease-out ${
                 focusMode 
-                  ? `${focusOptions.minimalistMode ? 'text-[10rem] animate-pulse-glow' : 'text-[8rem] animate-float'} text-white drop-shadow-2xl leading-none` 
+                  ? `${focusOptions.minimalistMode ? 'text-[6rem] animate-pulse-glow' : 'text-[5rem] animate-float'} text-white drop-shadow-2xl leading-none` 
                   : 'text-4xl text-gray-800'
               }`}>
                 {fmt(secondsLeft)}
               </div>
               {!focusMode && <div className="text-xs text-gray-500 mt-1 animate-fade-in">{Math.round(progress*100)}% done</div>}
               {focusMode && !focusOptions.minimalistMode && (
-                <div className="text-4xl text-gray-300 mt-8 capitalize animate-fade-in-delay font-light tracking-wide">
+                <div className="text-2xl text-gray-300 mt-6 capitalize animate-fade-in-delay font-light tracking-wide">
                   {phase === 'work' ? '✨ Focus Time' : '🌸 Break Time'}
                 </div>
               )}
