@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useFocusMode } from '../contexts/FocusModeContext';
 import VirtualBuddy from '../components/VirtualBuddy';
 import PomodoroTimer from '../components/PomodoroTimer';
-import { Trophy, Flame, Clock, LogOut, User, Target } from 'lucide-react';
+import { Trophy, Flame, Clock, User, Target } from 'lucide-react';
 import axios from 'axios';
 
 const Dashboard = () => {
@@ -65,31 +65,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-all duration-500 ${focusMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'p-4 md:p-8'}`}>
-      {/* Header - Hidden in focus mode */}
-      {!focusMode && (
-        <div className="max-w-7xl mx-auto mb-8">
-          <div className="flex justify-between items-center">
-            <div className="flex-1 text-center">
-              <h1 className="text-3xl font-bold text-gray-800">
-                {isAuthenticated ? `Welcome back, ${user?.username}!` : 'Welcome to KumaTime!'}
-              </h1>
-              <p className="text-gray-600">Let's focus together with your study buddy 🐻</p>
-            </div>
-            
-            {isAuthenticated && (
-              <button
-                onClick={logout}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
-              >
-                <LogOut size={18} />
-                Logout
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
+    <div className={`min-h-screen transition-all duration-500 ${focusMode ? 'bg-gradient-to-br from-gray-900 to-black' : 'p-4 md:p-8 pt-8'}`}>
       <div className={`max-w-7xl mx-auto ${focusMode ? 'h-screen flex items-center justify-center' : 'grid grid-cols-1 xl:grid-cols-4 gap-8'}`}>
         {/* Left Sidebar - Stats Only */}
         {!focusMode && (
