@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { useFocusMode } from '../contexts/FocusModeContext'
+import { useNotification } from '../contexts/NotificationContext'
 
 // Simple localStorage-backed session store (fallbacks if storage is unavailable)
 function safeStorage() {
@@ -44,6 +45,7 @@ const defaultConfig = {
 export default function PomodoroTimer() {
   const storage = useMemo(safeStorage, [])
   const { focusMode, toggleFocusMode } = useFocusMode()
+  const { permission, showNotification } = useNotification()
   const [config, setConfig] = useState(() => {
     try {
       const raw = storage?.getItem('kt.timer.config')
@@ -84,6 +86,24 @@ export default function PomodoroTimer() {
     setRunning(false)
     beep()
 
+    // Show notification based on phase completion
+    if (phase === 'work') {
+      showNotification('🎯 Work Session Complete!', {
+        body: `Great job! You completed a ${Math.round(config.work/60)} minute work session. Time for a break! 🌸`,
+        icon: '/vite.svg'
+      })
+    } else if (phase === 'shortBreak') {
+      showNotification('☕ Break Complete!', {
+        body: `Break time is over! Ready to focus again? Let\'s get back to work! 💪`,
+        icon: '/vite.svg'
+      })
+    } else if (phase === 'longBreak') {
+      showNotification('🌟 Long Break Complete!', {
+        body: `You\'ve completed a full cycle! Feeling refreshed? Time to start a new focus session! ✨`,
+        icon: '/vite.svg'
+      })
+    }
+
     if (phase === 'work') {
       // Save a completed work session
       try {
@@ -107,7 +127,7 @@ export default function PomodoroTimer() {
       setPhase('work')
       setSecondsLeft(config.work)
     }
-  }, [secondsLeft, running, phase, cycleCount, config, beep, storage])
+  }, [secondsLeft, running, phase, cycleCount, config, beep, storage, showNotification])
 
   // Fullscreen functionality
   const enterFullscreen = () => {

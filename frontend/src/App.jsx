@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { FocusModeProvider } from './contexts/FocusModeContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import MenuBar from './components/MenuBar';
 import WelcomePopup from './components/WelcomePopup';
 import Dashboard from './pages/Dashboard';
@@ -28,21 +29,23 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <FocusModeProvider>
-          <div className="font-cute min-h-screen">
-            <MenuBar />
-            <WelcomePopup />
-            <Routes>
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/login" element={<Login />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </div>
-        </FocusModeProvider>
+        <NotificationProvider>
+          <FocusModeProvider>
+            <div className="font-cute min-h-screen">
+              <MenuBar />
+              <WelcomePopup />
+              <Routes>
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/login" element={<Login />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+          </FocusModeProvider>
+        </NotificationProvider>
       </AuthProvider>
     </Router>
   );

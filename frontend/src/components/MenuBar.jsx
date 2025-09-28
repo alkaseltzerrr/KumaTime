@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useFocusMode } from '../contexts/FocusModeContext';
+import { useNotification } from '../contexts/NotificationContext';
 import { 
   Home, 
   User, 
@@ -14,6 +15,7 @@ import {
   Moon,
   Sun,
   Bell,
+  BellOff,
   BarChart3
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -21,9 +23,26 @@ import { useNavigate } from 'react-router-dom';
 const MenuBar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { focusMode } = useFocusMode();
+  const { permission, requestPermission, showNotification, isSupported } = useNotification();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const notificationPanelRef = useRef(null);
+
+  // Close notification panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationPanelRef.current && !notificationPanelRef.current.contains(event.target)) {
+        setShowNotificationPanel(false);
+      }
+    };
+
+    if (showNotificationPanel) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showNotificationPanel]);
 
   // Hide menu bar in focus mode
   if (focusMode) return null;
@@ -105,14 +124,113 @@ const MenuBar = () => {
             </motion.button>
 
             {/* Notifications */}
-            <motion.button
-              className="p-2 rounded-xl hover:bg-white/60 transition-all duration-300 relative"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Bell size={20} className="text-gray-600" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            </motion.button>
+            <div className="relative">
+              <motion.button
+                className={`p-2 rounded-xl hover:bg-white/60 transition-all duration-300 relative ${
+                  permission === 'granted' ? 'text-green-600' : 
+                  permission === 'denied' ? 'text-red-500' : 'text-gray-600'
+                }`}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowNotificationPanel(!showNotificationPanel)}
+              >
+                {permission === 'granted' ? (
+                  <Bell size={20} />
+                ) : permission === 'denied' ? (
+                  <BellOff size={20} />
+                ) : (
+                  <Bell size={20} />
+                )}
+                {permission !== 'granted' && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                )}
+              </motion.button>
+
+              {/* Notification Panel */}
+              <AnimatePresence>
+                {showNotificationPanel && (
+                  <motion.div
+                    ref={notificationPanelRef}
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    className="absolute right-0 top-12 w-80 bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-white/20 p-4 z-50"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-gray-800">🔔 Notifications</h3>
+                        <button 
+                          onClick={() => setShowNotificationPanel(false)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+
+                      {!isSupported ? (
+                        <p className="text-sm text-gray-600">
+                          Notifications are not supported in your browser
+                        </p>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between p-3 bg-white/40 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              {permission === 'granted' ? (
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              ) : permission === 'denied' ? (
+                                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                              ) : (
+                                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                              )}
+                              <span className="text-sm text-gray-700">
+                                {permission === 'granted' ? 'Enabled' : 
+                                 permission === 'denied' ? 'Blocked' : 'Disabled'}
+                              </span>
+                            </div>
+                            {permission !== 'granted' && (
+                              <button
+                                onClick={async () => {
+                                  const result = await requestPermission()
+                                  if (result === 'granted') {
+                                    showNotification('🎉 Notifications Enabled!', {
+                                      body: 'You\'ll now receive notifications when your focus sessions complete!'
+                                    })
+                                  }
+                                }}
+                                className="px-3 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300"
+                              >
+                                Enable
+                              </button>
+                            )}
+                          </div>
+
+                          {permission === 'granted' && (
+                            <div className="space-y-2">
+                              <button
+                                onClick={() => showNotification('🧪 Test Notification', {
+                                  body: 'Notifications are working perfectly! 🎉'
+                                })}
+                                className="w-full px-3 py-2 text-sm bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-300"
+                              >
+                                Test Notification
+                              </button>
+                              <p className="text-xs text-gray-600 text-center">
+                                You'll receive notifications when your focus sessions complete
+                              </p>
+                            </div>
+                          )}
+
+                          <div className="text-xs text-gray-500 border-t pt-2">
+                            Browser: {'Notification' in window ? '✅' : '❌'} | 
+                            HTTPS: {window.isSecureContext ? '✅' : '❌'}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* User Menu */}
             {isAuthenticated ? (
