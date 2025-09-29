@@ -138,7 +138,7 @@ const MenuBar = () => {
               className={`p-2 rounded-lg hover:bg-gray-100 transition-colors relative ${
                 permission === 'granted' ? 'text-green-500' : 
                 permission === 'denied' ? 'text-red-400' : 'text-gray-500'
-              }`}
+              } ${showNotificationPanel ? 'bg-gray-100' : ''}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={(e) => {
