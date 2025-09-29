@@ -29,6 +29,7 @@ const MenuBar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const notificationPanelRef = useRef(null);
+  const notificationButtonRef = useRef(null);
 
   // Close notification panel when clicking outside
   useEffect(() => {
@@ -133,6 +134,7 @@ const MenuBar = () => {
 
             {/* Notifications */}
             <motion.button
+              ref={notificationButtonRef}
               className={`p-2 rounded-lg hover:bg-gray-100 transition-colors relative ${
                 permission === 'granted' ? 'text-green-500' : 
                 permission === 'denied' ? 'text-red-400' : 'text-gray-500'
@@ -265,13 +267,21 @@ const MenuBar = () => {
 
     {/* Notification Panel - Outside Header */}
     <AnimatePresence>
-      {showNotificationPanel && (
+      {showNotificationPanel && notificationButtonRef.current && (
         <motion.div
           ref={notificationPanelRef}
           initial={{ opacity: 0, y: -10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          className="fixed top-20 right-4 w-80 bg-white rounded-lg border border-gray-200 shadow-xl p-4 z-40"
+          className="fixed w-80 bg-white rounded-lg border border-gray-200 shadow-xl p-4 z-40"
+          style={{
+            top: notificationButtonRef.current ? 
+              notificationButtonRef.current.getBoundingClientRect().bottom + window.scrollY + 8 : 
+              '80px',
+            left: notificationButtonRef.current ? 
+              notificationButtonRef.current.getBoundingClientRect().right - 320 + window.scrollX : 
+              'calc(100vw - 336px)'
+          }}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="space-y-3">
