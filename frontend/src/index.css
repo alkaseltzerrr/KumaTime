@@ -1,8 +1,137 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=Indie+Flower&family=Amatic+SC:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Kawaii Sketch-Style CSS */
+.kawaii-sketch {
+  position: relative;
+  border: 3px solid;
+  border-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M10,10 Q15,5 20,10 L80,8 Q85,12 90,8 L92,80 Q88,85 92,90 L20,92 Q15,88 10,92 Z' stroke='%23333' fill='none' stroke-width='2'/%3e%3c/svg%3e") 30;
+  border-radius: 20px;
+  transform: rotate(-0.5deg);
+  box-shadow: 
+    2px 2px 0px rgba(255, 182, 193, 0.3),
+    4px 4px 0px rgba(255, 182, 193, 0.2),
+    6px 6px 0px rgba(255, 182, 193, 0.1);
+}
+
+.kawaii-sketch:hover {
+  transform: rotate(0.3deg) scale(1.02);
+  transition: all 0.3s ease-out;
+}
+
+.sketch-button {
+  position: relative;
+  background: linear-gradient(135deg, #FFE5F1 0%, #FFF0F8 50%, #E8F4FD 100%);
+  border: 2px solid #FF69B4;
+  border-radius: 25px;
+  font-family: 'Kalam', cursive;
+  font-weight: 600;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+  box-shadow: 
+    0 0 0 2px rgba(255, 105, 180, 0.1),
+    3px 3px 0px rgba(255, 105, 180, 0.2),
+    0 6px 12px rgba(255, 105, 180, 0.15);
+  transform: rotate(-0.8deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.sketch-button:hover {
+  transform: rotate(0.5deg) translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 0 0 3px rgba(255, 105, 180, 0.2),
+    4px 4px 0px rgba(255, 105, 180, 0.3),
+    0 8px 16px rgba(255, 105, 180, 0.2);
+  background: linear-gradient(135deg, #FFD0E1 0%, #FFE8F4 50%, #D8F0FD 100%);
+}
+
+.sketch-button:active {
+  transform: rotate(-0.3deg) translateY(1px) scale(1.02);
+  box-shadow: 
+    0 0 0 2px rgba(255, 105, 180, 0.3),
+    2px 2px 0px rgba(255, 105, 180, 0.4);
+}
+
+.kawaii-border {
+  border: 3px dashed #FF69B4;
+  border-radius: 15px;
+  background: linear-gradient(45deg, 
+    rgba(255, 182, 193, 0.1) 0%, 
+    rgba(255, 240, 245, 0.2) 25%, 
+    rgba(230, 230, 250, 0.1) 50%, 
+    rgba(255, 228, 225, 0.2) 75%, 
+    rgba(255, 182, 193, 0.1) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.kawaii-border::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #FFB6C1, #FFE4E1, #E6E6FA, #FFF0F5);
+  border-radius: 18px;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.kawaii-heart::after {
+  content: '💖';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 20px;
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.kawaii-star::after {
+  content: '✨';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 18px;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.05); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.7; transform: scale(1.2) rotate(180deg); }
+}
+
+.sketch-text {
+  font-family: 'Kalam', cursive;
+  text-shadow: 2px 2px 0px rgba(255,255,255,0.8);
+  color: #8B5A8C;
+}
+
+.kawaii-gradient {
+  background: linear-gradient(135deg, 
+    #FFE5F1 0%, 
+    #FFF0F8 15%, 
+    #E8F4FD 30%, 
+    #FFF8DC 45%, 
+    #F0FFF0 60%, 
+    #FFE4E1 75%, 
+    #E6E6FA 90%, 
+    #FFF0F5 100%);
+}
+
+.sketch-shadow {
+  filter: drop-shadow(3px 3px 0px rgba(255, 105, 180, 0.3))
+          drop-shadow(6px 6px 0px rgba(255, 105, 180, 0.1));
+}
 
 /* Custom Animations for KumaTime */
 @keyframes fade-in {
@@ -159,6 +288,51 @@
   }
 }
 
+@keyframes wiggle {
+  0% { transform: rotate(-3deg); }
+  25% { transform: rotate(3deg); }
+  50% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes kawaii-shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-2px) rotate(-1deg); }
+  20% { transform: translateX(2px) rotate(1deg); }
+  30% { transform: translateX(-1px) rotate(-0.5deg); }
+  40% { transform: translateX(1px) rotate(0.5deg); }
+  50% { transform: translateX(-0.5px); }
+  60% { transform: translateX(0.5px); }
+}
+
+@keyframes sparkle {
+  0% { 
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+  100% { 
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+.animate-kawaii-shake:hover {
+  animation: kawaii-shake 0.8s ease-in-out;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
 /* Menu Bar Animations */
 @keyframes menu-slide-down {
   from {
@@ -193,8 +367,42 @@
   animation: menu-item-pop 0.3s ease-out;
 }
 
-@layer base {
-  body {
-    @apply bg-gradient-to-br from-pastel-lemon via-pastel-pink to-pastel-blue min-h-screen;
-  }
+/* Kawaii Background */
+body {
+  background: linear-gradient(135deg, 
+    #FFF8DC 0%,     /* Light cream */
+    #FFE5F1 20%,    /* Light pink */
+    #E8F4FD 40%,    /* Light blue */
+    #F0FFF0 60%,    /* Light mint */
+    #FFF0F5 80%,    /* Lavender blush */
+    #FFE4E1 100%    /* Misty rose */
+  );
+  min-height: 100vh;
+  font-family: 'Kalam', cursive;
+}
+
+/* Kawaii Sparkle Background Effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.2) 1px, transparent 1px),
+    radial-gradient(circle at 80% 20%, rgba(173, 216, 230, 0.2) 1px, transparent 1px),
+    radial-gradient(circle at 40% 70%, rgba(255, 240, 245, 0.2) 1px, transparent 1px),
+    radial-gradient(circle at 90% 80%, rgba(230, 230, 250, 0.2) 1px, transparent 1px);
+  background-size: 100px 100px, 150px 150px, 80px 80px, 120px 120px;
+  animation: sparkleMove 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes sparkleMove {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(10px, -5px); }
+  50% { transform: translate(-5px, 10px); }
+  75% { transform: translate(5px, -10px); }
 }

@@ -68,41 +68,52 @@ const MenuBar = () => {
     <motion.div
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-lg"
+      className="sticky top-0 z-50 kawaii-border bg-gradient-to-r from-pink-50/90 via-purple-50/90 to-blue-50/90 backdrop-blur-md border-b-4 border-dashed border-pink-300 shadow-lg sketch-shadow"
+      style={{ 
+        fontFamily: 'Kalam, cursive'
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-18">
           {/* Logo */}
           <motion.div 
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer animate-wiggle kawaii-heart"
             whileHover={{ scale: 1.05 }}
             onClick={() => handleNavigation('/')}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">🐻</span>
+            <div className="w-12 h-12 sketch-button flex items-center justify-center animate-float">
+              <span className="text-2xl">🐻</span>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                KumaTime
+              <h1 className="text-2xl font-bold sketch-text" style={{ fontFamily: 'Caveat, cursive' }}>
+                ✨ KumaTime ✨
               </h1>
-              <p className="text-xs text-gray-500 -mt-1">Focus & Flow</p>
+              <p className="text-sm text-purple-400 -mt-1" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+                🌸 Focus & Flow 🌸
+              </p>
             </div>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            {menuItems.map((item) => (
+          <div className="hidden md:flex items-center gap-4">
+            {menuItems.map((item, index) => (
               <motion.button
                 key={item.path}
                 onClick={() => handleNavigation(item.path)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 hover:bg-white/60 group ${
-                  window.location.pathname === item.path ? 'bg-white/60 shadow-sm' : ''
+                className={`sketch-button flex items-center gap-2 px-4 py-2 kawaii-star animate-kawaii-shake transition-all duration-300 group ${
+                  window.location.pathname === item.path ? 'kawaii-gradient shadow-lg scale-105' : ''
                 }`}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.1, rotate: index % 2 ? 2 : -2 }}
                 whileTap={{ scale: 0.95 }}
+                style={{
+                  fontFamily: 'Kalam, cursive',
+                  animationDelay: `${index * 0.1}s`
+                }}
               >
-                <item.icon size={18} className={`${item.color} group-hover:scale-110 transition-transform`} />
-                <span className="text-sm font-medium text-gray-700">{item.label}</span>
+                <item.icon size={20} className={`${item.color} group-hover:scale-125 animate-wiggle transition-transform`} />
+                <span className="text-sm font-bold text-purple-600 group-hover:text-pink-500">
+                  {item.label}
+                </span>
               </motion.button>
             ))}
           </div>
@@ -112,37 +123,39 @@ const MenuBar = () => {
             {/* Dark Mode Toggle */}
             <motion.button
               onClick={toggleDarkMode}
-              className="p-2 rounded-xl hover:bg-white/60 transition-all duration-300"
-              whileHover={{ scale: 1.1 }}
+              className="sketch-button p-3 animate-wiggle"
+              whileHover={{ scale: 1.15, rotate: 10 }}
               whileTap={{ scale: 0.9 }}
             >
               {isDarkMode ? (
-                <Sun size={20} className="text-yellow-500" />
+                <Sun size={22} className="text-yellow-400 animate-sparkle" />
               ) : (
-                <Moon size={20} className="text-gray-600" />
+                <Moon size={22} className="text-purple-500 animate-float" />
               )}
             </motion.button>
 
             {/* Notifications */}
-            <div className="relative">
+            <div className="relative kawaii-heart">
               <motion.button
-                className={`p-2 rounded-xl hover:bg-white/60 transition-all duration-300 relative ${
-                  permission === 'granted' ? 'text-green-600' : 
-                  permission === 'denied' ? 'text-red-500' : 'text-gray-600'
+                className={`sketch-button p-3 relative animate-kawaii-shake ${
+                  permission === 'granted' ? 'text-green-500' : 
+                  permission === 'denied' ? 'text-red-400' : 'text-purple-500'
                 }`}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.15, rotate: -5 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowNotificationPanel(!showNotificationPanel)}
               >
                 {permission === 'granted' ? (
-                  <Bell size={20} />
+                  <Bell size={22} className="animate-wiggle" />
                 ) : permission === 'denied' ? (
-                  <BellOff size={20} />
+                  <BellOff size={22} className="animate-kawaii-shake" />
                 ) : (
-                  <Bell size={20} />
+                  <Bell size={22} className="animate-float" />
                 )}
                 {permission !== 'granted' && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full animate-pulse shadow-lg">
+                    <span className="text-xs">!</span>
+                  </div>
                 )}
               </motion.button>
 
@@ -151,10 +164,11 @@ const MenuBar = () => {
                 {showNotificationPanel && (
                   <motion.div
                     ref={notificationPanelRef}
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    className="absolute right-0 top-12 w-80 bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-white/20 p-4 z-50"
+                    initial={{ opacity: 0, y: -10, scale: 0.95, rotate: -2 }}
+                    animate={{ opacity: 1, y: 0, scale: 1, rotate: 0.5 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95, rotate: 2 }}
+                    className="absolute right-0 top-14 w-80 kawaii-border kawaii-gradient backdrop-blur-sm sketch-shadow p-6 z-50"
+                    style={{ fontFamily: 'Kalam, cursive' }}
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -256,11 +270,12 @@ const MenuBar = () => {
             ) : (
               <motion.button
                 onClick={() => handleNavigation('/login')}
-                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg"
-                whileHover={{ scale: 1.05 }}
+                className="sketch-button px-6 py-3 kawaii-star animate-kawaii-shake font-bold"
+                whileHover={{ scale: 1.1, rotate: 3 }}
                 whileTap={{ scale: 0.95 }}
+                style={{ fontFamily: 'Caveat, cursive' }}
               >
-                Login
+                🌟 Login 🌟
               </motion.button>
             )}
 
