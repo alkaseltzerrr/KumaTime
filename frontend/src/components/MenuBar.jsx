@@ -76,18 +76,21 @@ const MenuBar = () => {
           {/* Logo */}
           <motion.div 
             className="flex items-center gap-3 cursor-pointer"
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.05, rotate: 2 }}
             onClick={() => handleNavigation('/')}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <span className="text-xl">🐻</span>
+            <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg relative">
+              <span className="text-2xl">🐻</span>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                <span className="text-xs">✨</span>
+              </div>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-gray-800">
-                KumaTime
+              <h1 className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                🌸 KumaTime 🌸
               </h1>
-              <p className="text-sm text-gray-500 -mt-1">
-                Focus & Flow
+              <p className="text-sm text-pink-400 -mt-1">
+                ♡ Focus & Cuteness ♡
               </p>
             </div>
           </motion.div>
