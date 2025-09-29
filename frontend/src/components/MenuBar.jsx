@@ -284,73 +284,101 @@ const MenuBar = () => {
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-800">🔔 Notifications</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
               <button 
                 onClick={() => setShowNotificationPanel(false)}
-                className="text-gray-500 hover:text-gray-700 p-1 rounded hover:bg-gray-100"
+                className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
             </div>
 
             {!isSupported ? (
-              <p className="text-sm text-gray-600">
-                Notifications are not supported in your browser
-              </p>
+              <div className="text-center py-8">
+                <p className="text-sm text-gray-500">
+                  Notifications are not supported in your browser
+                </p>
+              </div>
             ) : (
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    {permission === 'granted' ? (
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    ) : permission === 'denied' ? (
-                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                    ) : (
-                      <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                {/* Permission Status Card */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        permission === 'granted' ? 'bg-green-100' : 
+                        permission === 'denied' ? 'bg-red-100' : 'bg-orange-100'
+                      }`}>
+                        {permission === 'granted' ? (
+                          <Bell size={20} className="text-green-600" />
+                        ) : permission === 'denied' ? (
+                          <BellOff size={20} className="text-red-600" />
+                        ) : (
+                          <Bell size={20} className="text-orange-600" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {permission === 'granted' ? 'Notifications Enabled' : 
+                           permission === 'denied' ? 'Notifications Blocked' : 'Enable Notifications'}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {permission === 'granted' ? 'You\'ll receive focus session alerts' : 
+                           permission === 'denied' ? 'Please enable in browser settings' : 'Get notified when sessions complete'}
+                        </p>
+                      </div>
+                    </div>
+                    {permission !== 'granted' && (
+                      <button
+                        onClick={async () => {
+                          const result = await requestPermission()
+                          if (result === 'granted') {
+                            showNotification('🎉 Notifications Enabled!', {
+                              body: 'You\'ll now receive notifications when your focus sessions complete!'
+                            })
+                          }
+                        }}
+                        className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                      >
+                        Enable
+                      </button>
                     )}
-                    <span className="text-sm text-gray-700">
-                      {permission === 'granted' ? 'Enabled' : 
-                       permission === 'denied' ? 'Blocked' : 'Disabled'}
-                    </span>
                   </div>
-                  {permission !== 'granted' && (
-                    <button
-                      onClick={async () => {
-                        const result = await requestPermission()
-                        if (result === 'granted') {
-                          showNotification('🎉 Notifications Enabled!', {
-                            body: 'You\'ll now receive notifications when your focus sessions complete!'
-                          })
-                        }
-                      }}
-                      className="px-3 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-200"
-                    >
-                      Enable
-                    </button>
-                  )}
                 </div>
 
+                {/* Test Notification Card */}
                 {permission === 'granted' && (
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => showNotification('🧪 Test Notification', {
-                        body: 'Notifications are working perfectly! 🎉'
-                      })}
-                      className="w-full px-3 py-2 text-sm bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-200"
-                    >
-                      Test Notification
-                    </button>
-                    <p className="text-xs text-gray-600 text-center">
-                      You'll receive notifications when your focus sessions complete
-                    </p>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <span className="text-lg">🧪</span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">Test Notification</p>
+                          <p className="text-xs text-gray-500">Send a test notification to verify it's working</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => showNotification('🧪 Test Notification', {
+                          body: 'Notifications are working perfectly! 🎉'
+                        })}
+                        className="px-4 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+                      >
+                        Test
+                      </button>
+                    </div>
                   </div>
                 )}
 
-                <div className="text-xs text-gray-500 border-t pt-2">
-                  Browser: {'Notification' in window ? '✅' : '❌'} | 
-                  HTTPS: {window.isSecureContext ? '✅' : '❌'}
+                {/* System Info */}
+                <div className="pt-3 border-t border-gray-200">
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>Browser Support: {'Notification' in window ? '✅ Supported' : '❌ Not Supported'}</span>
+                    <span>HTTPS: {window.isSecureContext ? '✅ Secure' : '❌ Required'}</span>
+                  </div>
                 </div>
               </div>
             )}
