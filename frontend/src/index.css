@@ -138,6 +138,10 @@
   color: #8B5A8C;
 }
 
+.font-kawaii {
+  font-family: 'Kalam', 'Caveat', 'Patrick Hand', cursive;
+}
+
 .kawaii-gradient {
   background: linear-gradient(135deg, 
     #FFE5F1 0%, 

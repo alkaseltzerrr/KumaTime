@@ -83,6 +83,7 @@ const MenuBar = () => {
 
   const menuItems = [
     { icon: Home, label: 'Dashboard', path: '/', color: 'text-blue-500' },
+    { icon: Focus, label: 'Quick Focus', action: 'focus', color: 'text-pink-500', special: true },
     { icon: BarChart3, label: 'Statistics', path: '/stats', color: 'text-green-500' },
     { icon: Trophy, label: 'Achievements', path: '/achievements', color: 'text-yellow-500' },
     { icon: Settings, label: 'Settings', path: '/settings', color: 'text-gray-500' },
@@ -133,31 +134,28 @@ const MenuBar = () => {
           <div className="hidden md:flex items-center gap-2">
             {menuItems.map((item, index) => (
               <motion.button
-                key={item.path}
-                onClick={() => handleNavigation(item.path)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-gray-100 ${
-                  window.location.pathname === item.path ? 'bg-gray-100 text-purple-600' : 'text-gray-600 hover:text-gray-800'
+                key={item.path || item.action}
+                onClick={() => item.action === 'focus' ? handleQuickFocus() : handleNavigation(item.path)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                  item.special 
+                    ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-md hover:shadow-lg hover:from-pink-500 hover:to-purple-500' 
+                    : `hover:bg-gray-100 ${
+                        window.location.pathname === item.path ? 'bg-gray-100 text-purple-600' : 'text-gray-600 hover:text-gray-800'
+                      }`
                 }`}
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: item.special ? 1.05 : 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <item.icon size={18} className={window.location.pathname === item.path ? 'text-purple-600' : 'text-gray-500'} />
+                <item.icon size={18} className={
+                  item.special 
+                    ? 'text-white' 
+                    : window.location.pathname === item.path ? 'text-purple-600' : 'text-gray-500'
+                } />
                 <span className="text-sm font-medium">
                   {item.label}
                 </span>
               </motion.button>
             ))}
-            
-            {/* Quick Focus Mode Button */}
-            <motion.button
-              onClick={handleQuickFocus}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-400 to-red-500 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Focus size={18} />
-              <span className="text-sm font-medium">Quick Focus</span>
-            </motion.button>
           </div>
 
           {/* Right Side Actions */}
@@ -262,31 +260,27 @@ const MenuBar = () => {
             <div className="px-4 py-4 space-y-2">
               {menuItems.map((item, index) => (
                 <motion.button
-                  key={item.path}
+                  key={item.path || item.action}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  onClick={() => handleNavigation(item.path)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-gray-50 ${
-                    window.location.pathname === item.path ? 'bg-gray-100 text-purple-600' : 'text-gray-600'
+                  onClick={() => item.action === 'focus' ? handleQuickFocus() : handleNavigation(item.path)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    item.special 
+                      ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-md hover:from-pink-500 hover:to-purple-500' 
+                      : `hover:bg-gray-50 ${
+                          window.location.pathname === item.path ? 'bg-gray-100 text-purple-600' : 'text-gray-600'
+                        }`
                   }`}
                 >
-                  <item.icon size={20} className={window.location.pathname === item.path ? 'text-purple-600' : 'text-gray-500'} />
+                  <item.icon size={20} className={
+                    item.special 
+                      ? 'text-white' 
+                      : window.location.pathname === item.path ? 'text-purple-600' : 'text-gray-500'
+                  } />
                   <span className="font-medium">{item.label}</span>
                 </motion.button>
               ))}
-              
-              {/* Mobile Quick Focus Button */}
-              <motion.button
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                onClick={handleQuickFocus}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-gradient-to-r from-orange-400 to-red-500 text-white font-medium shadow-md"
-              >
-                <Focus size={20} />
-                <span className="font-medium">Quick Focus</span>
-              </motion.button>
               
               {/* Mobile User Section */}
               {isAuthenticated && (

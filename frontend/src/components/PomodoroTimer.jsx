@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { useFocusMode } from '../contexts/FocusModeContext'
 import { useNotification } from '../contexts/NotificationContext'
+import MascotEncouragement from './MascotEncouragement'
 
 // Simple localStorage-backed session store (fallbacks if storage is unavailable)
 function safeStorage() {
@@ -65,6 +66,8 @@ export default function PomodoroTimer() {
     hideProgress: false,
     minimalistMode: false
   })
+  const [showMascotEncouragement, setShowMascotEncouragement] = useState(false)
+  const [lastEncouragementTime, setLastEncouragementTime] = useState(0)
   const beep = useBeep()
 
   // Persist config changes
@@ -78,6 +81,26 @@ export default function PomodoroTimer() {
     const id = setInterval(() => setSecondsLeft((s) => (s > 0 ? s - 1 : 0)), 1000)
     return () => clearInterval(id)
   }, [running])
+
+  // Mascot encouragement logic - show once every 30 seconds during work sessions (FOR TESTING)
+  useEffect(() => {
+    if (!running || phase !== 'work') return
+
+    const totalTimeElapsed = config.work - secondsLeft
+    
+    // FOR TESTING: Show encouragement once every 30 seconds
+    const currentThirtySecInterval = Math.floor(totalTimeElapsed / 30) // Which 30-second interval we're in
+    const lastThirtySecInterval = Math.floor(lastEncouragementTime / 30) // Last interval we showed encouragement
+    
+    const shouldShowEncouragement = totalTimeElapsed >= 30 && // At least 30 seconds elapsed
+      currentThirtySecInterval > lastThirtySecInterval && // We're in a new 30-second interval
+      totalTimeElapsed % 30 === 0 // Only trigger on exact 30-second marks
+
+    if (shouldShowEncouragement) {
+      setShowMascotEncouragement(true)
+      setLastEncouragementTime(totalTimeElapsed)
+    }
+  }, [running, phase, secondsLeft, config.work, lastEncouragementTime])
 
   // Phase completion handling
   useEffect(() => {
@@ -161,10 +184,18 @@ export default function PomodoroTimer() {
   const total = phase === 'work' ? config.work : phase === 'shortBreak' ? config.shortBreak : config.longBreak
   const progress = 1 - secondsLeft / total
 
-  function startPause() { setRunning((r) => !r) }
+  function startPause() { 
+    setRunning((r) => !r)
+    // Reset encouragement tracking when starting a new session
+    if (!running) {
+      setLastEncouragementTime(0)
+    }
+  }
   function reset() {
     setRunning(false)
     setSecondsLeft(total)
+    setLastEncouragementTime(0)
+    setShowMascotEncouragement(false)
   }
   function skip() { setSecondsLeft(0) }
 
@@ -577,6 +608,13 @@ export default function PomodoroTimer() {
           <AnimatedSessionHistory />
         </div>
       </div>
+
+      {/* Mascot Encouragement */}
+      <MascotEncouragement 
+        isVisible={showMascotEncouragement}
+        onClose={() => setShowMascotEncouragement(false)}
+        sessionType={phase === 'work' ? 'focus' : 'break'}
+      />
     </div>
   )
 }
