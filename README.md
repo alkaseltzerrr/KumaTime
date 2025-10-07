@@ -279,6 +279,8 @@ We welcome contributions! Here's how you can help:
 
 **Happy focusing with your KumaTime buddy! 🐻💕**
 
+##Currently still in development btw :3
+
 *May your study sessions be productive and your breaks be restorative* (◕‿◕)♡
 
 
