@@ -61,15 +61,16 @@ const MenuBar = () => {
   }, [showNotificationPanel, showFocusPopup]);
 
   const handleQuickFocus = () => {
-    // Start focus mode immediately
-    enterFocusMode();
-    // Show customization popup
+    // Show customization popup first
     setShowFocusPopup(true);
+    // Don't start focus mode yet - wait for user to configure and click "Start Focus"
   };
 
   const applyFocusSettings = () => {
     setShowFocusPopup(false);
-    // Settings are already applied to state, focus mode is already active
+    // NOW start focus mode after settings are applied
+    enterFocusMode();
+    // Send notification if enabled
     if (focusSettings.soundEnabled) {
       showNotification('🎯 Focus Mode Started!', {
         body: `${focusSettings.sessionType} session for ${focusSettings.duration} minutes`
