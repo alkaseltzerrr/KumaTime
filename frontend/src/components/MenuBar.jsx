@@ -16,20 +16,32 @@ import {
   Sun,
   Bell,
   BellOff,
-  BarChart3
+  BarChart3,
+  Focus,
+  Play,
+  Timer
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const MenuBar = () => {
   const { user, logout, isAuthenticated } = useAuth();
-  const { focusMode } = useFocusMode();
+  const { focusMode, enterFocusMode } = useFocusMode();
   const { permission, requestPermission, showNotification, isSupported } = useNotification();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const [showFocusPopup, setShowFocusPopup] = useState(false);
+  const [focusSettings, setFocusSettings] = useState({
+    duration: 25,
+    breakDuration: 5,
+    sessionType: 'Pomodoro',
+    autoStartBreaks: true,
+    soundEnabled: true
+  });
   const notificationPanelRef = useRef(null);
   const notificationButtonRef = useRef(null);
+  const focusPopupRef = useRef(null);
 
   // Close notification panel when clicking outside
   useEffect(() => {
@@ -37,13 +49,33 @@ const MenuBar = () => {
       if (notificationPanelRef.current && !notificationPanelRef.current.contains(event.target)) {
         setShowNotificationPanel(false);
       }
+      if (focusPopupRef.current && !focusPopupRef.current.contains(event.target)) {
+        setShowFocusPopup(false);
+      }
     };
 
-    if (showNotificationPanel) {
+    if (showNotificationPanel || showFocusPopup) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [showNotificationPanel]);
+  }, [showNotificationPanel, showFocusPopup]);
+
+  const handleQuickFocus = () => {
+    // Start focus mode immediately
+    enterFocusMode();
+    // Show customization popup
+    setShowFocusPopup(true);
+  };
+
+  const applyFocusSettings = () => {
+    setShowFocusPopup(false);
+    // Settings are already applied to state, focus mode is already active
+    if (focusSettings.soundEnabled) {
+      showNotification('🎯 Focus Mode Started!', {
+        body: `${focusSettings.sessionType} session for ${focusSettings.duration} minutes`
+      });
+    }
+  };
 
   // Hide menu bar in focus mode
   if (focusMode) return null;
@@ -114,6 +146,17 @@ const MenuBar = () => {
                 </span>
               </motion.button>
             ))}
+            
+            {/* Quick Focus Mode Button */}
+            <motion.button
+              onClick={handleQuickFocus}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-400 to-red-500 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Focus size={18} />
+              <span className="text-sm font-medium">Quick Focus</span>
+            </motion.button>
           </div>
 
           {/* Right Side Actions */}
@@ -231,6 +274,18 @@ const MenuBar = () => {
                   <span className="font-medium">{item.label}</span>
                 </motion.button>
               ))}
+              
+              {/* Mobile Quick Focus Button */}
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                onClick={handleQuickFocus}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-gradient-to-r from-orange-400 to-red-500 text-white font-medium shadow-md"
+              >
+                <Focus size={20} />
+                <span className="font-medium">Quick Focus</span>
+              </motion.button>
               
               {/* Mobile User Section */}
               {isAuthenticated && (
@@ -383,6 +438,155 @@ const MenuBar = () => {
               </div>
             )}
           </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    {/* Focus Mode Customization Popup */}
+    <AnimatePresence>
+      {showFocusPopup && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowFocusPopup(false)}
+        >
+          <motion.div
+            ref={focusPopupRef}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Focus className="text-orange-500" size={24} />
+                Focus Mode Settings
+              </h3>
+              <button
+                onClick={() => setShowFocusPopup(false)}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Session Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Session Type</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {['Pomodoro', 'Custom'].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setFocusSettings(prev => ({ ...prev, sessionType: type }))}
+                      className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                        focusSettings.sessionType === type
+                          ? 'bg-orange-500 text-white border-orange-500'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Focus Duration */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Focus Duration: {focusSettings.duration} minutes
+                </label>
+                <input
+                  type="range"
+                  min="5"
+                  max="90"
+                  step="5"
+                  value={focusSettings.duration}
+                  onChange={(e) => setFocusSettings(prev => ({ ...prev, duration: parseInt(e.target.value) }))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>5 min</span>
+                  <span>90 min</span>
+                </div>
+              </div>
+
+              {/* Break Duration */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Break Duration: {focusSettings.breakDuration} minutes
+                </label>
+                <input
+                  type="range"
+                  min="1"
+                  max="30"
+                  step="1"
+                  value={focusSettings.breakDuration}
+                  onChange={(e) => setFocusSettings(prev => ({ ...prev, breakDuration: parseInt(e.target.value) }))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>1 min</span>
+                  <span>30 min</span>
+                </div>
+              </div>
+
+              {/* Options */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Auto-start breaks</span>
+                  <button
+                    onClick={() => setFocusSettings(prev => ({ ...prev, autoStartBreaks: !prev.autoStartBreaks }))}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      focusSettings.autoStartBreaks ? 'bg-orange-500' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        focusSettings.autoStartBreaks ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Sound notifications</span>
+                  <button
+                    onClick={() => setFocusSettings(prev => ({ ...prev, soundEnabled: !prev.soundEnabled }))}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      focusSettings.soundEnabled ? 'bg-orange-500' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        focusSettings.soundEnabled ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowFocusPopup(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={applyFocusSettings}
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-400 to-red-500 text-white rounded-lg hover:shadow-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Play size={16} />
+                  Start Focus
+                </button>
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
