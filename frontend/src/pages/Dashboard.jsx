@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useFocusMode } from '../contexts/FocusModeContext';
+import { useDarkMode } from '../contexts/DarkModeContext';
 import VirtualBuddy from '../components/VirtualBuddy';
 import PomodoroTimer from '../components/PomodoroTimer';
 import { Trophy, Flame, Clock, User, Target } from 'lucide-react';
@@ -10,6 +11,7 @@ import axios from 'axios';
 const Dashboard = () => {
   const { user, logout, isAuthenticated, fetchProfile } = useAuth();
   const { focusMode } = useFocusMode();
+  const { isDarkMode } = useDarkMode();
   const [buddyMood, setBuddyMood] = useState('idle');
   const [stats, setStats] = useState(null);
   const [badges, setBadges] = useState([]);

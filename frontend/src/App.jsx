@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { FocusModeProvider } from './contexts/FocusModeContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { DarkModeProvider } from './contexts/DarkModeContext';
 import MenuBar from './components/MenuBar';
 import WelcomePopup from './components/WelcomePopup';
 import Dashboard from './pages/Dashboard';
@@ -31,19 +32,21 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <FocusModeProvider>
-            <div className="font-cute min-h-screen">
-              <MenuBar />
-              <WelcomePopup />
-              <Routes>
-                <Route path="/" element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/login" element={<Login />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </div>
+            <DarkModeProvider>
+              <div className="font-cute min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+                <MenuBar />
+                <WelcomePopup />
+                <Routes>
+                  <Route path="/" element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </div>
+            </DarkModeProvider>
           </FocusModeProvider>
         </NotificationProvider>
       </AuthProvider>

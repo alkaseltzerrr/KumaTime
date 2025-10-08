@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { useFocusMode } from '../contexts/FocusModeContext'
 import { useNotification } from '../contexts/NotificationContext'
+import { useDarkMode } from '../contexts/DarkModeContext'
 import MascotEncouragement from './MascotEncouragement'
 
 // Simple localStorage-backed session store (fallbacks if storage is unavailable)
@@ -47,6 +48,7 @@ export default function PomodoroTimer() {
   const storage = useMemo(safeStorage, [])
   const { focusMode, toggleFocusMode } = useFocusMode()
   const { permission, showNotification } = useNotification()
+  const { isDarkMode } = useDarkMode()
   const [config, setConfig] = useState(() => {
     try {
       const raw = storage?.getItem('kt.timer.config')
@@ -219,19 +221,19 @@ export default function PomodoroTimer() {
           <div className="relative">
             <button 
               onClick={() => setShowFocusOptions(!showFocusOptions)}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-500 bg-gradient-to-r from-pink-100 to-purple-100 text-gray-700 hover:from-pink-200 hover:to-purple-200 shadow-sm hover:shadow-md transform hover:scale-[1.02]"
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-500 bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/30 dark:to-purple-900/30 text-gray-700 dark:text-gray-300 hover:from-pink-200 hover:to-purple-200 dark:hover:from-pink-800/40 dark:hover:to-purple-800/40 shadow-sm hover:shadow-md transform hover:scale-[1.02]"
             >
               🔍 Focus Mode {showFocusOptions ? '▲' : '▼'}
             </button>
             
             {/* Focus Options Dropdown */}
-            <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-2xl shadow-2xl border border-pink-100 overflow-hidden transition-all duration-700 ease-in-out ${
+            <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-pink-100 dark:border-gray-700 overflow-hidden transition-all duration-700 ease-in-out ${
               showFocusOptions 
                 ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' 
                 : 'opacity-0 scale-95 -translate-y-4 pointer-events-none'
             }`}>
-              <div className="p-6 min-w-64 bg-gradient-to-br from-pink-50 via-white to-purple-50">
-                <h4 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+              <div className="p-6 min-w-64 bg-gradient-to-br from-pink-50 via-white to-purple-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
+                <h4 className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-lg flex items-center gap-2 transition-colors duration-300">
                   ✨ Focus Options
                 </h4>
                 
@@ -248,7 +250,7 @@ export default function PomodoroTimer() {
                       <div className={`w-6 h-6 rounded-lg border-2 transition-all duration-300 ${
                         focusOptions.fullscreen 
                           ? 'bg-gradient-to-br from-pink-400 to-purple-500 border-purple-400 shadow-lg scale-110' 
-                          : 'bg-white border-gray-300 group-hover:border-pink-300'
+                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-pink-300 dark:group-hover:border-pink-400'
                       }`}>
                         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${
                           focusOptions.fullscreen ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
@@ -257,7 +259,7 @@ export default function PomodoroTimer() {
                         </div>
                       </div>
                     </div>
-                    <span className="text-sm text-gray-700 group-hover:text-pink-600 transition-colors">
+                    <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                       🖥️ Fullscreen Mode
                     </span>
                   </label>
@@ -273,7 +275,7 @@ export default function PomodoroTimer() {
                       <div className={`w-6 h-6 rounded-lg border-2 transition-all duration-300 ${
                         focusOptions.hideProgress 
                           ? 'bg-gradient-to-br from-green-400 to-blue-500 border-blue-400 shadow-lg scale-110' 
-                          : 'bg-white border-gray-300 group-hover:border-green-300'
+                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-green-300 dark:group-hover:border-green-400'
                       }`}>
                         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${
                           focusOptions.hideProgress ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
@@ -282,7 +284,7 @@ export default function PomodoroTimer() {
                         </div>
                       </div>
                     </div>
-                    <span className="text-sm text-gray-700 group-hover:text-green-600 transition-colors">
+                    <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
                       ⭕ Hide Progress Ring
                     </span>
                   </label>
@@ -298,7 +300,7 @@ export default function PomodoroTimer() {
                       <div className={`w-6 h-6 rounded-lg border-2 transition-all duration-300 ${
                         focusOptions.minimalistMode 
                           ? 'bg-gradient-to-br from-yellow-400 to-orange-500 border-orange-400 shadow-lg scale-110' 
-                          : 'bg-white border-gray-300 group-hover:border-yellow-300'
+                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-yellow-300 dark:group-hover:border-yellow-400'
                       }`}>
                         <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${
                           focusOptions.minimalistMode ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
@@ -307,7 +309,7 @@ export default function PomodoroTimer() {
                         </div>
                       </div>
                     </div>
-                    <span className="text-sm text-gray-700 group-hover:text-yellow-600 transition-colors">
+                    <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
                       ✨ Ultra Minimalist
                     </span>
                   </label>
@@ -322,7 +324,7 @@ export default function PomodoroTimer() {
                   </button>
                   <button 
                     onClick={() => setShowFocusOptions(false)}
-                    className="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-all duration-500 transform hover:scale-[1.02]"
+                    className="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-500 transform hover:scale-[1.02]"
                   >
                     Cancel
                   </button>
@@ -336,7 +338,7 @@ export default function PomodoroTimer() {
       <div className={`relative overflow-hidden transition-all duration-500 ${
         focusMode 
           ? 'w-full h-full flex items-center justify-center p-8' 
-          : 'w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow p-6'
+          : 'w-full h-full bg-gradient-to-br from-pink-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow p-6'
       }`}>
         {!focusMode && <div className="absolute -right-16 -top-16 opacity-20 text-9xl">🐻</div>}
         
@@ -356,23 +358,23 @@ export default function PomodoroTimer() {
         {!focusMode && (
           <div className={`flex items-center justify-between mb-6 transition-all duration-500 ${focusMode ? 'text-white mb-12' : ''}`}>
             <div>
-              <h2 className={`font-bold transition-all duration-700 ${focusMode ? 'text-white text-5xl animate-pulse-slow' : 'text-gray-800 text-2xl'}`}>
+              <h2 className={`font-bold transition-all duration-700 ${focusMode ? 'text-white text-5xl animate-pulse-slow' : 'text-gray-800 dark:text-gray-200 text-2xl'}`}>
                 KumaTime
               </h2>
               <div className="mt-1 inline-flex items-center gap-2 animate-slide-in">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-[1.02] ${
-                  phase === 'work' ? 'bg-red-100 text-red-700' : 
-                  phase === 'shortBreak' ? 'bg-green-100 text-green-700' : 
-                  'bg-blue-100 text-blue-700'
+                  phase === 'work' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' : 
+                  phase === 'shortBreak' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 
+                  'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
                 }`}>
                   {phase === 'work' ? 'Focus' : phase === 'shortBreak' ? 'Short Break' : 'Long Break'}
                 </span>
-                <span className="text-xs text-gray-500">Cycle {cycleCount}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">Cycle {cycleCount}</span>
               </div>
             </div>
             <div className="text-right animate-fade-in">
-              <div className="text-sm text-gray-500">Session</div>
-              <div className="text-lg font-semibold text-gray-700">{fmt(total)} total</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Session</div>
+              <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">{fmt(total)} total</div>
             </div>
           </div>
         )}
@@ -401,11 +403,11 @@ export default function PomodoroTimer() {
               <div className={`font-bold transition-all duration-700 ease-out ${
                 focusMode 
                   ? `${focusOptions.minimalistMode ? 'text-[6rem] animate-pulse-glow' : 'text-[5rem] animate-float'} text-white drop-shadow-2xl leading-none` 
-                  : 'text-4xl text-gray-800'
+                  : 'text-4xl text-gray-800 dark:text-gray-200'
               }`}>
                 {fmt(secondsLeft)}
               </div>
-              {!focusMode && <div className="text-xs text-gray-500 mt-1 animate-fade-in">{Math.round(progress*100)}% done</div>}
+              {!focusMode && <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 animate-fade-in">{Math.round(progress*100)}% done</div>}
               {focusMode && !focusOptions.minimalistMode && (
                 <div className="text-2xl text-gray-300 mt-6 capitalize animate-fade-in-delay font-light tracking-wide">
                   {phase === 'work' ? '✨ Focus Time' : '🌸 Break Time'}
@@ -420,27 +422,27 @@ export default function PomodoroTimer() {
                 <button onClick={startPause} className={`flex-1 px-4 py-2 rounded-xl font-semibold shadow-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-lg transform active:scale-95 ${running ? 'bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white' : 'bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white'}`}>
                   {running ? '⏸ Pause' : '▶ Start'}
                 </button>
-                <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-500 hover:scale-[1.02] transform active:scale-95">🌸 Reset</button>
-                <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 hover:bg-white text-gray-700 shadow transition-all duration-500 hover:scale-[1.02] transform active:scale-95">🐾 Skip</button>
+                <button onClick={reset} className="px-4 py-2 rounded-xl bg-white/60 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 shadow transition-all duration-500 hover:scale-[1.02] transform active:scale-95">🌸 Reset</button>
+                <button onClick={skip} className="px-4 py-2 rounded-xl bg-white/60 dark:bg-gray-700/60 hover:bg-white dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 shadow transition-all duration-500 hover:scale-[1.02] transform active:scale-95">🐾 Skip</button>
               </div>
 
-              <div className="text-sm text-gray-600 mb-3 animate-fade-in">Quick controls</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 animate-fade-in">Quick controls</div>
               <div className="grid grid-cols-2 gap-2 animate-stagger-in">
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
-                  <div className="text-xs text-gray-500">Work</div>
-                  <div className="font-medium">{Math.round(config.work/60)} min</div>
+                <div className="p-3 bg-white/60 dark:bg-gray-700/60 rounded-lg hover:bg-white/80 dark:hover:bg-gray-600/80 transition-all duration-500 hover:scale-[1.02] transform">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Work</div>
+                  <div className="font-medium dark:text-gray-200">{Math.round(config.work/60)} min</div>
                 </div>
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
-                  <div className="text-xs text-gray-500">Break</div>
-                  <div className="font-medium">{Math.round(config.shortBreak/60)} min</div>
+                <div className="p-3 bg-white/60 dark:bg-gray-700/60 rounded-lg hover:bg-white/80 dark:hover:bg-gray-600/80 transition-all duration-500 hover:scale-[1.02] transform">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Break</div>
+                  <div className="font-medium dark:text-gray-200">{Math.round(config.shortBreak/60)} min</div>
                 </div>
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
-                  <div className="text-xs text-gray-500">Long</div>
-                  <div className="font-medium">{Math.round(config.longBreak/60)} min</div>
+                <div className="p-3 bg-white/60 dark:bg-gray-700/60 rounded-lg hover:bg-white/80 dark:hover:bg-gray-600/80 transition-all duration-500 hover:scale-[1.02] transform">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Long</div>
+                  <div className="font-medium dark:text-gray-200">{Math.round(config.longBreak/60)} min</div>
                 </div>
-                <div className="p-3 bg-white/60 rounded-lg hover:bg-white/80 transition-all duration-500 hover:scale-[1.02] transform">
-                  <div className="text-xs text-gray-500">Every</div>
-                  <div className="font-medium">{config.cyclesBeforeLongBreak} cycles</div>
+                <div className="p-3 bg-white/60 dark:bg-gray-700/60 rounded-lg hover:bg-white/80 dark:hover:bg-gray-600/80 transition-all duration-500 hover:scale-[1.02] transform">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Every</div>
+                  <div className="font-medium dark:text-gray-200">{config.cyclesBeforeLongBreak} cycles</div>
                 </div>
               </div>
             </div>
