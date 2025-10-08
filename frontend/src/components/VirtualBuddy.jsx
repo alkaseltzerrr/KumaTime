@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 const VirtualBuddy = ({ mood = 'idle', level = 1, happiness = 50 }) => {
+  const { isDarkMode } = useDarkMode();
   const getBearExpression = () => {
     if (happiness >= 80) return '🐻'; // Very happy
     if (happiness >= 60) return '🐻'; // Happy
@@ -139,12 +141,12 @@ const VirtualBuddy = ({ mood = 'idle', level = 1, happiness = 50 }) => {
         {/* Level badge */}
   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
           <motion.div
-            className="bg-pastel-peach px-3 py-1 rounded-full shadow-md"
+            className="bg-orange-200 dark:bg-orange-900/50 px-3 py-1 rounded-full shadow-md transition-colors duration-300"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <span className="text-sm font-bold text-gray-700">Lv.{level}</span>
+            <span className="text-sm font-bold text-gray-700 dark:text-gray-300 transition-colors duration-300">Lv.{level}</span>
           </motion.div>
         </div>
       </motion.div>
@@ -152,13 +154,13 @@ const VirtualBuddy = ({ mood = 'idle', level = 1, happiness = 50 }) => {
       {/* Speech bubble for special moods */}
       {(mood === 'happy' || mood === 'celebrating') && (
         <motion.div
-          className="mt-12 bg-white p-3 rounded-lg shadow-lg relative"
+          className="mt-12 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg relative transition-colors duration-300"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
         >
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rotate-45" />
-          <p className="text-sm font-medium text-gray-700">
+          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white dark:bg-gray-800 rotate-45 transition-colors duration-300" />
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">
             {mood === 'celebrating' ? "Great job! 🎉" : "Let's focus! 💪"}
           </p>
         </motion.div>

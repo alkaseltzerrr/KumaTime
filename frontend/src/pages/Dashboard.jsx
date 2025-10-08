@@ -332,52 +332,52 @@ const Dashboard = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 transition-colors duration-300"
             >
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-gray-800 dark:text-gray-200 transition-colors duration-300">
                 <Trophy className="text-yellow-500" size={24} />
                 Your Progress
               </h2>
               
               <div className="space-y-4">
                 {/* Today's Stats */}
-                <div className="p-4 bg-pastel-lemon/30 rounded-xl">
+                <div className="p-4 bg-yellow-100/50 dark:bg-yellow-900/30 rounded-xl transition-colors duration-300">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-600">Today</span>
-                    <Target size={16} className="text-gray-400" />
+                    <span className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">Today</span>
+                    <Target size={16} className="text-gray-400 dark:text-gray-500 transition-colors duration-300" />
                   </div>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">
                     {stats?.today?.sessions || 0} sessions
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
                     {Math.round((stats?.today?.duration || 0) / 60)} minutes focused
                   </p>
                 </div>
 
                 {/* Streak */}
-                <div className="p-4 bg-pastel-peach/30 rounded-xl">
+                <div className="p-4 bg-orange-100/50 dark:bg-orange-900/30 rounded-xl transition-colors duration-300">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-600">Current Streak</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">Current Streak</span>
                     <Flame size={16} className="text-orange-500" />
                   </div>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">
                     {stats?.overall?.current_streak || 0} days
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
                     Best: {stats?.overall?.longest_streak || 0} days
                   </p>
                 </div>
 
                 {/* Total Time */}
-                <div className="p-4 bg-pastel-blue/30 rounded-xl">
+                <div className="p-4 bg-blue-100/50 dark:bg-blue-900/30 rounded-xl transition-colors duration-300">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-600">Total Focus Time</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">Total Focus Time</span>
                     <Clock size={16} className="text-blue-500" />
                   </div>
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">
                     {Math.round((stats?.overall?.total_focus_time || 0) / 60)}h
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
                     {stats?.overall?.total_sessions || 0} total sessions
                   </p>
                 </div>
@@ -393,7 +393,7 @@ const Dashboard = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 transition-colors duration-300"
             >
               <VirtualBuddy 
                 mood={buddyMood}
@@ -408,7 +408,7 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: focusMode ? 0 : 0.1 }}
-            className={focusMode ? 'w-full h-full' : 'bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8'}
+            className={focusMode ? 'w-full h-full' : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 transition-colors duration-300'}
           >
             <PomodoroTimer 
               onSessionComplete={handleSessionComplete}
@@ -426,9 +426,9 @@ const Dashboard = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6"
+                className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 transition-colors duration-300"
               >
-                <h2 className="text-xl font-bold mb-4">🏆 Achievements</h2>
+                <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200 transition-colors duration-300">🏆 Achievements</h2>
                 <div className="grid grid-cols-3 gap-3">
                   {user.badges.slice(0, 6).map((badge, index) => (
                     <motion.div
@@ -436,11 +436,11 @@ const Dashboard = () => {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.4 + index * 0.05 }}
-                      className="flex flex-col items-center p-2 bg-gradient-to-br from-pastel-lavender/50 to-pastel-pink/50 rounded-lg"
+                      className="flex flex-col items-center p-2 bg-gradient-to-br from-purple-100/50 to-pink-100/50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-lg transition-colors duration-300"
                       title={badge.description}
                     >
                       <span className="text-2xl">{badge.icon}</span>
-                      <span className="text-xs text-center mt-1 text-gray-700">{badge.name}</span>
+                      <span className="text-xs text-center mt-1 text-gray-700 dark:text-gray-300 transition-colors duration-300">{badge.name}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -452,21 +452,21 @@ const Dashboard = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-pastel-mint/50 to-pastel-blue/50 rounded-3xl shadow-xl p-6"
+              className="bg-gradient-to-br from-green-100/50 to-blue-100/50 dark:from-green-900/30 dark:to-blue-900/30 rounded-3xl shadow-xl p-6 transition-colors duration-300"
             >
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold flex items-center gap-2">
+                <h3 className="font-bold flex items-center gap-2 text-gray-800 dark:text-gray-200 transition-colors duration-300">
                   {currentTip?.icon} {currentTip?.title || "Study Tip"}
                 </h3>
                 <button 
                   onClick={() => setCurrentTip(getRandomTip())}
-                  className="text-gray-400 hover:text-gray-600 transition-colors duration-300 text-sm hover:scale-[1.05] transform"
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-300 text-sm hover:scale-[1.05] transform"
                   title="Get new tip"
                 >
                   🔄
                 </button>
               </div>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">
                 {currentTip?.tip || "Loading tip..."}
               </p>
             </motion.div>
