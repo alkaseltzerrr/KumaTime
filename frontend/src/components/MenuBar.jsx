@@ -34,6 +34,7 @@ const MenuBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showFocusPopup, setShowFocusPopup] = useState(false);
+  const [panelAnchorTick, setPanelAnchorTick] = useState(0);
   const focusSettings = focusSessionSettings;
   const notificationPanelRef = useRef(null);
   const notificationButtonRef = useRef(null);
@@ -75,6 +76,21 @@ const MenuBar = () => {
     document.addEventListener('keydown', handleEscapeKey);
     return () => document.removeEventListener('keydown', handleEscapeKey);
   }, [showNotificationPanel, showFocusPopup, isMenuOpen]);
+
+  // Re-anchor the notification panel while scrolling/resizing.
+  useEffect(() => {
+    if (!showNotificationPanel) return undefined;
+
+    const refreshPanelAnchor = () => setPanelAnchorTick((prev) => prev + 1);
+
+    window.addEventListener('resize', refreshPanelAnchor);
+    window.addEventListener('scroll', refreshPanelAnchor, true);
+
+    return () => {
+      window.removeEventListener('resize', refreshPanelAnchor);
+      window.removeEventListener('scroll', refreshPanelAnchor, true);
+    };
+  }, [showNotificationPanel]);
 
   // Ensure transient overlays are closed after route changes.
   useEffect(() => {
@@ -133,6 +149,9 @@ const MenuBar = () => {
   const isActivePath = (path) => location.pathname === path;
 
   const getNotificationPanelStyle = () => {
+    // Access tick so style is recalculated on scroll/resize updates.
+    void panelAnchorTick;
+
     if (!notificationButtonRef.current) {
       return {
         top: '80px',
