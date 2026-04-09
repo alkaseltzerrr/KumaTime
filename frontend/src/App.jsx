@@ -8,6 +8,9 @@ import MenuBar from './components/MenuBar';
 import WelcomePopup from './components/WelcomePopup';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import Statistics from './pages/Statistics';
+import Achievements from './pages/Achievements';
+import SettingsPage from './pages/Settings';
 import './App.css';
 
 // Protected Route wrapper
@@ -43,6 +46,9 @@ function App() {
                     </ProtectedRoute>
                   } />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/stats" element={<Statistics />} />
+                  <Route path="/achievements" element={<Achievements />} />
+                  <Route path="/settings" element={<SettingsPage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </div>
