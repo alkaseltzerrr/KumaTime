@@ -24,6 +24,7 @@ export const FocusModeProvider = ({ children }) => {
   const [focusMode, setFocusMode] = useState(false);
   const [focusSessionSettings, setFocusSessionSettings] = useState(() => {
     try {
+      if (typeof window === 'undefined') return defaultFocusSessionSettings;
       const raw = window.localStorage.getItem(FOCUS_SETTINGS_STORAGE_KEY);
       return raw ? { ...defaultFocusSessionSettings, ...JSON.parse(raw) } : defaultFocusSessionSettings;
     } catch {
@@ -54,6 +55,7 @@ export const FocusModeProvider = ({ children }) => {
 
   useEffect(() => {
     try {
+      if (typeof window === 'undefined') return;
       window.localStorage.setItem(FOCUS_SETTINGS_STORAGE_KEY, JSON.stringify(focusSessionSettings));
     } catch {
       // Ignore storage write failures (private mode or restricted storage).
