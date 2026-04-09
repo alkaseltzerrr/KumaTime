@@ -189,6 +189,7 @@ const MenuBar = () => {
             {/* Dark Mode Toggle */}
             <motion.button
               onClick={toggleDarkMode}
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -203,6 +204,10 @@ const MenuBar = () => {
             {/* Notifications */}
             <motion.button
               ref={notificationButtonRef}
+              aria-label={showNotificationPanel ? 'Close notifications panel' : 'Open notifications panel'}
+              aria-expanded={showNotificationPanel}
+              aria-controls="notification-panel"
+              aria-haspopup="dialog"
               className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300 relative ${
                 permission === 'granted' ? 'text-green-500' : 
                 permission === 'denied' || permission === 'unsupported' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400'
@@ -243,6 +248,7 @@ const MenuBar = () => {
                 </div>
                 <motion.button
                   onClick={logout}
+                  aria-label="Log out"
                   className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 dark:text-red-400 transition-all duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -264,6 +270,9 @@ const MenuBar = () => {
             {/* Mobile Menu Button */}
             <motion.button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -282,6 +291,7 @@ const MenuBar = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -336,6 +346,7 @@ const MenuBar = () => {
                     </div>
                     <button
                       onClick={logout}
+                      aria-label="Log out"
                       className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 dark:text-red-400 transition-all duration-200"
                     >
                       <LogOut size={20} />
@@ -353,6 +364,10 @@ const MenuBar = () => {
     <AnimatePresence>
       {showNotificationPanel && notificationButtonRef.current && (
         <motion.div
+          id="notification-panel"
+          role="dialog"
+          aria-modal="false"
+          aria-label="Notifications"
           ref={notificationPanelRef}
           initial={{ opacity: 0, y: -10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -366,6 +381,7 @@ const MenuBar = () => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 transition-colors duration-300">Notifications</h3>
               <button 
                 onClick={() => setShowNotificationPanel(false)}
+                aria-label="Close notifications panel"
                 className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
               >
                 <X size={18} />
@@ -473,6 +489,9 @@ const MenuBar = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="focus-settings-title"
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           onClick={() => setShowFocusPopup(false)}
         >
@@ -485,12 +504,13 @@ const MenuBar = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 transition-colors duration-300">
+              <h3 id="focus-settings-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 transition-colors duration-300">
                 <Focus className="text-orange-500" size={24} />
                 Focus Mode Settings
               </h3>
               <button
                 onClick={() => setShowFocusPopup(false)}
+                aria-label="Close focus settings"
                 className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
               >
                 <X size={20} />
@@ -564,6 +584,9 @@ const MenuBar = () => {
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Auto-start breaks</span>
                   <button
                     onClick={() => setFocusSettings(prev => ({ ...prev, autoStartBreaks: !prev.autoStartBreaks }))}
+                    role="switch"
+                    aria-checked={focusSettings.autoStartBreaks}
+                    aria-label="Toggle auto-start breaks"
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       focusSettings.autoStartBreaks ? 'bg-orange-500' : 'bg-gray-300 dark:bg-gray-600'
                     }`}
@@ -580,6 +603,9 @@ const MenuBar = () => {
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Sound notifications</span>
                   <button
                     onClick={() => setFocusSettings(prev => ({ ...prev, soundEnabled: !prev.soundEnabled }))}
+                    role="switch"
+                    aria-checked={focusSettings.soundEnabled}
+                    aria-label="Toggle sound notifications"
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       focusSettings.soundEnabled ? 'bg-orange-500' : 'bg-gray-300 dark:bg-gray-600'
                     }`}
