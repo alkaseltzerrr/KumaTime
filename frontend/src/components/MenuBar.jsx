@@ -56,6 +56,26 @@ const MenuBar = () => {
     }
   }, [showNotificationPanel, showFocusPopup]);
 
+  // Escape key closes open overlays for keyboard accessibility
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key !== 'Escape') return;
+
+      if (showNotificationPanel) {
+        setShowNotificationPanel(false);
+      }
+      if (showFocusPopup) {
+        setShowFocusPopup(false);
+      }
+      if (isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => document.removeEventListener('keydown', handleEscapeKey);
+  }, [showNotificationPanel, showFocusPopup, isMenuOpen]);
+
   const handleQuickFocus = () => {
     setIsMenuOpen(false);
     // Show customization popup first
