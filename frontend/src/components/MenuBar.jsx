@@ -38,6 +38,8 @@ const MenuBar = () => {
   const notificationButtonRef = useRef(null);
   const focusPopupRef = useRef(null);
   const wasNotificationPanelOpenRef = useRef(false);
+  const focusPopupTriggerRef = useRef(null);
+  const wasFocusPopupOpenRef = useRef(false);
 
   // Close notification panel when clicking outside
   useEffect(() => {
@@ -64,6 +66,15 @@ const MenuBar = () => {
 
     wasNotificationPanelOpenRef.current = showNotificationPanel;
   }, [showNotificationPanel]);
+
+  // Return keyboard focus to the trigger when the focus settings popup closes.
+  useEffect(() => {
+    if (!showFocusPopup && wasFocusPopupOpenRef.current && !focusMode) {
+      focusPopupTriggerRef.current?.focus?.();
+    }
+
+    wasFocusPopupOpenRef.current = showFocusPopup;
+  }, [showFocusPopup, focusMode]);
 
   // Escape key closes open overlays for keyboard accessibility
   useEffect(() => {
@@ -119,9 +130,12 @@ const MenuBar = () => {
     };
   }, [showFocusPopup]);
 
-  const handleQuickFocus = () => {
+  const handleQuickFocus = (triggerElement) => {
     setIsMenuOpen(false);
     setShowNotificationPanel(false);
+    if (triggerElement instanceof HTMLElement) {
+      focusPopupTriggerRef.current = triggerElement;
+    }
     // Show customization popup first
     setShowFocusPopup(true);
     // Don't start focus mode yet - wait for user to configure and click "Start Focus"
@@ -218,7 +232,7 @@ const MenuBar = () => {
             {menuItems.map((item, index) => (
               <motion.button
                 key={item.path || item.action}
-                onClick={() => item.action === 'focus' ? handleQuickFocus() : handleNavigation(item.path)}
+                onClick={(e) => item.action === 'focus' ? handleQuickFocus(e.currentTarget) : handleNavigation(item.path)}
                 aria-current={item.path && isActivePath(item.path) ? 'page' : undefined}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                   item.special 
@@ -372,7 +386,7 @@ const MenuBar = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  onClick={() => item.action === 'focus' ? handleQuickFocus() : handleNavigation(item.path)}
+                  onClick={(e) => item.action === 'focus' ? handleQuickFocus(e.currentTarget) : handleNavigation(item.path)}
                   aria-current={item.path && isActivePath(item.path) ? 'page' : undefined}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     item.special 
