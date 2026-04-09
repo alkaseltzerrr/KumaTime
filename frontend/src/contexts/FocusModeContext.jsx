@@ -10,6 +10,8 @@ const defaultFocusSessionSettings = {
   soundEnabled: true
 };
 
+const FOCUS_SETTINGS_STORAGE_KEY = 'kt.focus.session.settings';
+
 export const useFocusMode = () => {
   const context = useContext(FocusModeContext);
   if (!context) {
@@ -20,7 +22,14 @@ export const useFocusMode = () => {
 
 export const FocusModeProvider = ({ children }) => {
   const [focusMode, setFocusMode] = useState(false);
-  const [focusSessionSettings, setFocusSessionSettings] = useState(defaultFocusSessionSettings);
+  const [focusSessionSettings, setFocusSessionSettings] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem(FOCUS_SETTINGS_STORAGE_KEY);
+      return raw ? { ...defaultFocusSessionSettings, ...JSON.parse(raw) } : defaultFocusSessionSettings;
+    } catch {
+      return defaultFocusSessionSettings;
+    }
+  });
   const [focusSessionLaunchId, setFocusSessionLaunchId] = useState(0);
 
   const updateFocusSessionSettings = useCallback((updates) => {
@@ -42,6 +51,14 @@ export const FocusModeProvider = ({ children }) => {
   const exitFocusMode = useCallback(() => {
     setFocusMode(false);
   }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(FOCUS_SETTINGS_STORAGE_KEY, JSON.stringify(focusSessionSettings));
+    } catch {
+      // Ignore storage write failures (private mode or restricted storage).
+    }
+  }, [focusSessionSettings]);
 
   // Keyboard shortcuts for focus mode
   useEffect(() => {
