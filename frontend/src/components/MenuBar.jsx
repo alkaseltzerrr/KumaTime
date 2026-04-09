@@ -153,6 +153,13 @@ const MenuBar = () => {
     }
   };
 
+  const handleLogout = () => {
+    setIsMenuOpen(false);
+    setShowNotificationPanel(false);
+    setShowFocusPopup(false);
+    logout();
+  };
+
   // Hide menu bar in focus mode
   if (focusMode) return null;
 
@@ -332,7 +339,7 @@ const MenuBar = () => {
                   </div>
                 </div>
                 <motion.button
-                  onClick={logout}
+                  onClick={handleLogout}
                   aria-label="Log out"
                   className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 dark:text-red-400 transition-all duration-200"
                   whileHover={{ scale: 1.05 }}
@@ -435,7 +442,7 @@ const MenuBar = () => {
                       </div>
                     </div>
                     <button
-                      onClick={logout}
+                      onClick={handleLogout}
                       aria-label="Log out"
                       className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 dark:text-red-400 transition-all duration-200"
                     >
