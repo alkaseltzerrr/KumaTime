@@ -37,6 +37,7 @@ const MenuBar = () => {
   const notificationPanelRef = useRef(null);
   const notificationButtonRef = useRef(null);
   const focusPopupRef = useRef(null);
+  const wasNotificationPanelOpenRef = useRef(false);
 
   // Close notification panel when clicking outside
   useEffect(() => {
@@ -54,6 +55,15 @@ const MenuBar = () => {
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [showNotificationPanel, showFocusPopup]);
+
+  // Return keyboard focus to the trigger when the notification panel closes.
+  useEffect(() => {
+    if (!showNotificationPanel && wasNotificationPanelOpenRef.current) {
+      notificationButtonRef.current?.focus();
+    }
+
+    wasNotificationPanelOpenRef.current = showNotificationPanel;
+  }, [showNotificationPanel]);
 
   // Escape key closes open overlays for keyboard accessibility
   useEffect(() => {
@@ -111,6 +121,7 @@ const MenuBar = () => {
 
   const handleQuickFocus = () => {
     setIsMenuOpen(false);
+    setShowNotificationPanel(false);
     // Show customization popup first
     setShowFocusPopup(true);
     // Don't start focus mode yet - wait for user to configure and click "Start Focus"
@@ -268,7 +279,9 @@ const MenuBar = () => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setShowNotificationPanel(!showNotificationPanel);
+                setIsMenuOpen(false);
+                setShowFocusPopup(false);
+                setShowNotificationPanel((prev) => !prev);
               }}
             >
               {permission === 'granted' ? (
@@ -320,7 +333,11 @@ const MenuBar = () => {
 
             {/* Mobile Menu Button */}
             <motion.button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => {
+                setShowNotificationPanel(false);
+                setShowFocusPopup(false);
+                setIsMenuOpen((prev) => !prev);
+              }}
               aria-label={isMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
               aria-expanded={isMenuOpen}
               aria-controls="mobile-menu"
