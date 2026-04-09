@@ -70,7 +70,7 @@ const MenuBar = () => {
   const applyFocusSettings = () => {
     setShowFocusPopup(false);
     // NOW start focus mode after settings are applied
-    enterFocusMode();
+    enterFocusMode(focusSettings);
     // Send notification if enabled
     if (focusSettings.soundEnabled) {
       showNotification('🎯 Focus Mode Started!', {

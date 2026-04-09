@@ -2,6 +2,14 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 
 const FocusModeContext = createContext();
 
+const defaultFocusSessionSettings = {
+  duration: 25,
+  breakDuration: 5,
+  sessionType: 'Pomodoro',
+  autoStartBreaks: true,
+  soundEnabled: true
+};
+
 export const useFocusMode = () => {
   const context = useContext(FocusModeContext);
   if (!context) {
@@ -12,12 +20,18 @@ export const useFocusMode = () => {
 
 export const FocusModeProvider = ({ children }) => {
   const [focusMode, setFocusMode] = useState(false);
+  const [focusSessionSettings, setFocusSessionSettings] = useState(defaultFocusSessionSettings);
+  const [focusSessionLaunchId, setFocusSessionLaunchId] = useState(0);
 
   const toggleFocusMode = useCallback(() => {
     setFocusMode(prev => !prev);
   }, []);
 
-  const enterFocusMode = useCallback(() => {
+  const enterFocusMode = useCallback((settings) => {
+    if (settings) {
+      setFocusSessionSettings((prev) => ({ ...prev, ...settings }));
+      setFocusSessionLaunchId((prev) => prev + 1);
+    }
     setFocusMode(true);
   }, []);
 
@@ -47,7 +61,9 @@ export const FocusModeProvider = ({ children }) => {
     focusMode,
     toggleFocusMode,
     enterFocusMode,
-    exitFocusMode
+    exitFocusMode,
+    focusSessionSettings,
+    focusSessionLaunchId
   };
 
   return (

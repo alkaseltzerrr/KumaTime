@@ -46,7 +46,7 @@ const defaultConfig = {
 
 export default function PomodoroTimer() {
   const storage = useMemo(safeStorage, [])
-  const { focusMode, toggleFocusMode } = useFocusMode()
+  const { focusMode, toggleFocusMode, focusSessionSettings, focusSessionLaunchId } = useFocusMode()
   const { permission, showNotification } = useNotification()
   const { isDarkMode } = useDarkMode()
   const [config, setConfig] = useState(() => {
@@ -71,6 +71,27 @@ export default function PomodoroTimer() {
   const [showMascotEncouragement, setShowMascotEncouragement] = useState(false)
   const [lastEncouragementTime, setLastEncouragementTime] = useState(0)
   const beep = useBeep()
+  const isSoundEnabled = !focusMode || focusSessionSettings?.soundEnabled !== false
+
+  // Apply MenuBar Quick Focus settings when a new configured focus session starts.
+  useEffect(() => {
+    if (!focusSessionLaunchId || !focusSessionSettings) return
+
+    const workMinutes = Math.max(1, Number(focusSessionSettings.duration) || 25)
+    const breakMinutes = Math.max(1, Number(focusSessionSettings.breakDuration) || 5)
+
+    setConfig((prev) => ({
+      ...prev,
+      work: workMinutes * 60,
+      shortBreak: breakMinutes * 60
+    }))
+    setPhase('work')
+    setSecondsLeft(workMinutes * 60)
+    setRunning(false)
+    setCycleCount(0)
+    setShowMascotEncouragement(false)
+    setLastEncouragementTime(0)
+  }, [focusSessionLaunchId, focusSessionSettings])
 
   // Persist config changes
   useEffect(() => {
@@ -109,20 +130,22 @@ export default function PomodoroTimer() {
     if (secondsLeft !== 0) return
     if (!running) return
     setRunning(false)
-    beep()
+    if (isSoundEnabled) {
+      beep()
+    }
 
     // Show notification based on phase completion
-    if (phase === 'work') {
+    if (isSoundEnabled && phase === 'work') {
       showNotification('🎯 Work Session Complete!', {
         body: `Great job! You completed a ${Math.round(config.work/60)} minute work session. Time for a break! 🌸`,
         icon: '/vite.svg'
       })
-    } else if (phase === 'shortBreak') {
+    } else if (isSoundEnabled && phase === 'shortBreak') {
       showNotification('☕ Break Complete!', {
         body: `Break time is over! Ready to focus again? Let\'s get back to work! 💪`,
         icon: '/vite.svg'
       })
-    } else if (phase === 'longBreak') {
+    } else if (isSoundEnabled && phase === 'longBreak') {
       showNotification('🌟 Long Break Complete!', {
         body: `You\'ve completed a full cycle! Feeling refreshed? Time to start a new focus session! ✨`,
         icon: '/vite.svg'
@@ -148,11 +171,14 @@ export default function PomodoroTimer() {
       const nextPhase = nextCycle % config.cyclesBeforeLongBreak === 0 ? 'longBreak' : 'shortBreak'
       setPhase(nextPhase)
       setSecondsLeft(nextPhase === 'longBreak' ? config.longBreak : config.shortBreak)
+      if (focusMode && focusSessionSettings?.autoStartBreaks) {
+        setRunning(true)
+      }
     } else {
       setPhase('work')
       setSecondsLeft(config.work)
     }
-  }, [secondsLeft, running, phase, cycleCount, config, beep, storage, showNotification])
+  }, [secondsLeft, running, phase, cycleCount, config, beep, storage, showNotification, isSoundEnabled, focusMode, focusSessionSettings])
 
   // Fullscreen functionality
   const enterFullscreen = () => {
