@@ -9,7 +9,6 @@ import {
   User, 
   Settings, 
   Trophy, 
-  Clock, 
   LogOut, 
   Menu, 
   X,
@@ -19,8 +18,7 @@ import {
   BellOff,
   BarChart3,
   Focus,
-  Play,
-  Timer
+  Play
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
