@@ -208,6 +208,7 @@ const MenuBar = () => {
               <motion.button
                 key={item.path || item.action}
                 onClick={() => item.action === 'focus' ? handleQuickFocus() : handleNavigation(item.path)}
+                aria-current={item.path && isActivePath(item.path) ? 'page' : undefined}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                   item.special 
                     ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-md hover:shadow-lg hover:from-pink-500 hover:to-purple-500' 
@@ -355,6 +356,7 @@ const MenuBar = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => item.action === 'focus' ? handleQuickFocus() : handleNavigation(item.path)}
+                  aria-current={item.path && isActivePath(item.path) ? 'page' : undefined}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     item.special 
                       ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-md hover:from-pink-500 hover:to-purple-500' 
