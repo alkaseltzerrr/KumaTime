@@ -179,7 +179,7 @@ const MenuBar = () => {
               ref={notificationButtonRef}
               className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300 relative ${
                 permission === 'granted' ? 'text-green-500' : 
-                permission === 'denied' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400'
+                permission === 'denied' || permission === 'unsupported' ? 'text-red-400' : 'text-gray-500 dark:text-gray-400'
               } ${showNotificationPanel ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -191,7 +191,7 @@ const MenuBar = () => {
             >
               {permission === 'granted' ? (
                 <Bell size={20} />
-              ) : permission === 'denied' ? (
+              ) : permission === 'denied' || permission === 'unsupported' ? (
                 <BellOff size={20} />
               ) : (
                 <Bell size={20} />
@@ -367,11 +367,11 @@ const MenuBar = () => {
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                         permission === 'granted' ? 'bg-green-100' : 
-                        permission === 'denied' ? 'bg-red-100' : 'bg-orange-100'
+                        permission === 'denied' || permission === 'unsupported' ? 'bg-red-100' : 'bg-orange-100'
                       }`}>
                         {permission === 'granted' ? (
                           <Bell size={20} className="text-green-600" />
-                        ) : permission === 'denied' ? (
+                        ) : permission === 'denied' || permission === 'unsupported' ? (
                           <BellOff size={20} className="text-red-600" />
                         ) : (
                           <Bell size={20} className="text-orange-600" />
@@ -380,15 +380,17 @@ const MenuBar = () => {
                       <div>
                         <p className="font-medium text-gray-900 dark:text-gray-100 transition-colors duration-300">
                           {permission === 'granted' ? 'Notifications Enabled' : 
-                           permission === 'denied' ? 'Notifications Blocked' : 'Enable Notifications'}
+                           permission === 'denied' ? 'Notifications Blocked' :
+                           permission === 'unsupported' ? 'Notifications Unsupported' : 'Enable Notifications'}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
                           {permission === 'granted' ? 'You\'ll receive focus session alerts' : 
-                           permission === 'denied' ? 'Please enable in browser settings' : 'Get notified when sessions complete'}
+                           permission === 'denied' ? 'Please enable in browser settings' :
+                           permission === 'unsupported' ? 'Your browser does not support notifications' : 'Get notified when sessions complete'}
                         </p>
                       </div>
                     </div>
-                    {permission !== 'granted' && (
+                    {permission !== 'granted' && permission !== 'unsupported' && (
                       <button
                         onClick={async () => {
                           const result = await requestPermission()

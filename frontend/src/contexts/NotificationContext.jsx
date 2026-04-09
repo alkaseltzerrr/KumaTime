@@ -11,26 +11,35 @@ export const useNotification = () => {
 }
 
 export const NotificationProvider = ({ children }) => {
+  const isSupported = typeof window !== 'undefined' && 'Notification' in window
   const [permission, setPermission] = useState('default')
   
   useEffect(() => {
-    if ('Notification' in window) {
+    if (isSupported) {
       setPermission(Notification.permission)
+    } else {
+      setPermission('unsupported')
     }
-  }, [])
+  }, [isSupported])
 
   const requestPermission = useCallback(async () => {
-    if ('Notification' in window && Notification.permission === 'default') {
+    if (!isSupported) {
+      return 'unsupported'
+    }
+
+    if (Notification.permission === 'default') {
       const result = await Notification.requestPermission()
       setPermission(result)
       return result
     }
+
+    setPermission(Notification.permission)
     return Notification.permission
-  }, [])
+  }, [isSupported])
 
   const showNotification = useCallback((title, options = {}) => {
     try {
-      if ('Notification' in window && permission === 'granted') {
+      if (isSupported && permission === 'granted') {
         const notification = new Notification(title, {
           icon: '/vite.svg',
           badge: '/vite.svg',
@@ -47,7 +56,7 @@ export const NotificationProvider = ({ children }) => {
         return notification
       } else {
         console.log('Notifications not available:', { 
-          hasNotification: 'Notification' in window, 
+          hasNotification: isSupported, 
           permission 
         })
       }
@@ -55,13 +64,13 @@ export const NotificationProvider = ({ children }) => {
       console.error('Failed to show notification:', error)
     }
     return null
-  }, [permission])
+  }, [permission, isSupported])
 
   const value = {
     permission,
     requestPermission,
     showNotification,
-    isSupported: 'Notification' in window
+    isSupported
   }
 
   return (
