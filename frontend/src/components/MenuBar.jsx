@@ -26,7 +26,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const MenuBar = () => {
   const { user, logout, isAuthenticated } = useAuth();
-  const { focusMode, enterFocusMode } = useFocusMode();
+  const { focusMode, enterFocusMode, focusSessionSettings, updateFocusSessionSettings } = useFocusMode();
   const { permission, requestPermission, showNotification, isSupported } = useNotification();
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
@@ -34,13 +34,7 @@ const MenuBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showFocusPopup, setShowFocusPopup] = useState(false);
-  const [focusSettings, setFocusSettings] = useState({
-    duration: 25,
-    breakDuration: 5,
-    sessionType: 'Pomodoro',
-    autoStartBreaks: true,
-    soundEnabled: true
-  });
+  const focusSettings = focusSessionSettings;
   const notificationPanelRef = useRef(null);
   const notificationButtonRef = useRef(null);
   const focusPopupRef = useRef(null);
@@ -525,7 +519,7 @@ const MenuBar = () => {
                   {['Pomodoro', 'Custom'].map((type) => (
                     <button
                       key={type}
-                      onClick={() => setFocusSettings(prev => ({ ...prev, sessionType: type }))}
+                      onClick={() => updateFocusSessionSettings({ sessionType: type })}
                       className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
                         focusSettings.sessionType === type
                           ? 'bg-orange-500 text-white border-orange-500'
@@ -549,7 +543,7 @@ const MenuBar = () => {
                   max="90"
                   step="5"
                   value={focusSettings.duration}
-                  onChange={(e) => setFocusSettings(prev => ({ ...prev, duration: parseInt(e.target.value) }))}
+                  onChange={(e) => updateFocusSessionSettings({ duration: parseInt(e.target.value) })}
                   className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider transition-colors duration-300"
                 />
                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-300">
@@ -569,7 +563,7 @@ const MenuBar = () => {
                   max="30"
                   step="1"
                   value={focusSettings.breakDuration}
-                  onChange={(e) => setFocusSettings(prev => ({ ...prev, breakDuration: parseInt(e.target.value) }))}
+                  onChange={(e) => updateFocusSessionSettings({ breakDuration: parseInt(e.target.value) })}
                   className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider transition-colors duration-300"
                 />
                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-300">
@@ -583,7 +577,7 @@ const MenuBar = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Auto-start breaks</span>
                   <button
-                    onClick={() => setFocusSettings(prev => ({ ...prev, autoStartBreaks: !prev.autoStartBreaks }))}
+                    onClick={() => updateFocusSessionSettings({ autoStartBreaks: !focusSettings.autoStartBreaks })}
                     role="switch"
                     aria-checked={focusSettings.autoStartBreaks}
                     aria-label="Toggle auto-start breaks"
@@ -602,7 +596,7 @@ const MenuBar = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">Sound notifications</span>
                   <button
-                    onClick={() => setFocusSettings(prev => ({ ...prev, soundEnabled: !prev.soundEnabled }))}
+                    onClick={() => updateFocusSessionSettings({ soundEnabled: !focusSettings.soundEnabled })}
                     role="switch"
                     aria-checked={focusSettings.soundEnabled}
                     aria-label="Toggle sound notifications"

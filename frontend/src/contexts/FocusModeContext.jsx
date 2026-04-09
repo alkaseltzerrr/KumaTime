@@ -23,6 +23,10 @@ export const FocusModeProvider = ({ children }) => {
   const [focusSessionSettings, setFocusSessionSettings] = useState(defaultFocusSessionSettings);
   const [focusSessionLaunchId, setFocusSessionLaunchId] = useState(0);
 
+  const updateFocusSessionSettings = useCallback((updates) => {
+    setFocusSessionSettings((prev) => ({ ...prev, ...updates }));
+  }, []);
+
   const toggleFocusMode = useCallback(() => {
     setFocusMode(prev => !prev);
   }, []);
@@ -63,7 +67,8 @@ export const FocusModeProvider = ({ children }) => {
     enterFocusMode,
     exitFocusMode,
     focusSessionSettings,
-    focusSessionLaunchId
+    focusSessionLaunchId,
+    updateFocusSessionSettings
   };
 
   return (

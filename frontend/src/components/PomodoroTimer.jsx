@@ -46,7 +46,7 @@ const defaultConfig = {
 
 export default function PomodoroTimer() {
   const storage = useMemo(safeStorage, [])
-  const { focusMode, toggleFocusMode, focusSessionSettings, focusSessionLaunchId } = useFocusMode()
+  const { focusMode, toggleFocusMode, focusSessionSettings, focusSessionLaunchId, updateFocusSessionSettings } = useFocusMode()
   const { permission, showNotification } = useNotification()
   const { isDarkMode } = useDarkMode()
   const [config, setConfig] = useState(() => {
@@ -525,6 +525,7 @@ export default function PomodoroTimer() {
                     onChange: (e) => {
                       const v = Math.max(1, Number(e.target.value)||25)
                       setConfig((c)=>({ ...c, work: v*60 }))
+                      updateFocusSessionSettings({ duration: v })
                       if (phase==='work') setSecondsLeft(v*60)
                     },
                     min: 1, max: 180, color: 'pink'
@@ -535,6 +536,7 @@ export default function PomodoroTimer() {
                     onChange: (e) => {
                       const v = Math.max(1, Number(e.target.value)||5)
                       setConfig((c)=>({ ...c, shortBreak: v*60 }))
+                      updateFocusSessionSettings({ breakDuration: v })
                       if (phase==='shortBreak') setSecondsLeft(v*60)
                     },
                     min: 1, max: 60, color: 'green'
@@ -618,6 +620,7 @@ export default function PomodoroTimer() {
                           shortBreak: preset.short * 60,
                           longBreak: preset.long * 60
                         }));
+                        updateFocusSessionSettings({ duration: preset.work, breakDuration: preset.short });
                         if (phase === 'work') setSecondsLeft(preset.work * 60);
                         else if (phase === 'shortBreak') setSecondsLeft(preset.short * 60);
                         else if (phase === 'longBreak') setSecondsLeft(preset.long * 60);
