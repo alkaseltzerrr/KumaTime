@@ -179,20 +179,27 @@ const MenuBar = () => {
       return {
         top: '80px',
         left: '8px',
-        width: 'min(20rem, calc(100vw - 1rem))'
+        width: 'min(20rem, calc(100vw - 1rem))',
+        maxHeight: 'calc(100vh - 1rem)'
       };
     }
 
     const rect = notificationButtonRef.current.getBoundingClientRect();
     const panelWidth = Math.min(320, Math.max(220, window.innerWidth - 16));
+    const estimatedPanelHeight = 420;
     const minLeft = window.scrollX + 8;
     const maxLeft = window.scrollX + window.innerWidth - panelWidth - 8;
     const desiredLeft = rect.right - panelWidth + window.scrollX;
+    const minTop = window.scrollY + 8;
+    const maxTop = window.scrollY + window.innerHeight - estimatedPanelHeight - 8;
+    const desiredTop = rect.bottom + window.scrollY + 8;
+    const clampedTop = Math.min(Math.max(desiredTop, minTop), Math.max(minTop, maxTop));
 
     return {
-      top: `${rect.bottom + window.scrollY + 8}px`,
+      top: `${clampedTop}px`,
       left: `${Math.min(Math.max(desiredLeft, minLeft), maxLeft)}px`,
-      width: `${panelWidth}px`
+      width: `${panelWidth}px`,
+      maxHeight: 'calc(100vh - 1rem)'
     };
   };
 
@@ -455,7 +462,7 @@ const MenuBar = () => {
           initial={{ opacity: 0, y: -10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          className="fixed bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl p-4 z-40 transition-colors duration-300"
+          className="fixed overflow-y-auto bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl p-4 z-40 transition-colors duration-300"
           style={getNotificationPanelStyle()}
           onClick={(e) => e.stopPropagation()}
         >
