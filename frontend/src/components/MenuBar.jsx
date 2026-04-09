@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useFocusMode } from '../contexts/FocusModeContext';
@@ -29,6 +29,10 @@ const MenuBar = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
   const location = useLocation();
+  const idPrefix = useId();
+  const notificationPanelId = `${idPrefix}-notification-panel`;
+  const mobileMenuId = `${idPrefix}-mobile-menu`;
+  const focusSettingsTitleId = `${idPrefix}-focus-settings-title`;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showFocusPopup, setShowFocusPopup] = useState(false);
@@ -296,7 +300,7 @@ const MenuBar = () => {
               ref={notificationButtonRef}
               aria-label={showNotificationPanel ? 'Close notifications panel' : 'Open notifications panel'}
               aria-expanded={showNotificationPanel}
-              aria-controls="notification-panel"
+              aria-controls={notificationPanelId}
               aria-haspopup="dialog"
               className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300 relative ${
                 permission === 'granted' ? 'text-green-500' : 
@@ -368,7 +372,7 @@ const MenuBar = () => {
               }}
               aria-label={isMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
               aria-expanded={isMenuOpen}
-              aria-controls="mobile-menu"
+              aria-controls={mobileMenuId}
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -387,7 +391,7 @@ const MenuBar = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            id="mobile-menu"
+            id={mobileMenuId}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -461,7 +465,7 @@ const MenuBar = () => {
     <AnimatePresence>
       {showNotificationPanel && notificationButtonRef.current && (
         <motion.div
-          id="notification-panel"
+          id={notificationPanelId}
           role="dialog"
           aria-modal="false"
           aria-label="Notifications"
@@ -588,7 +592,7 @@ const MenuBar = () => {
           exit={{ opacity: 0 }}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="focus-settings-title"
+          aria-labelledby={focusSettingsTitleId}
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           onClick={() => setShowFocusPopup(false)}
         >
@@ -601,7 +605,7 @@ const MenuBar = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 id="focus-settings-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 transition-colors duration-300">
+              <h3 id={focusSettingsTitleId} className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 transition-colors duration-300">
                 <Focus className="text-orange-500" size={24} />
                 Focus Mode Settings
               </h3>
