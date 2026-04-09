@@ -22,7 +22,7 @@ import {
   Play,
   Timer
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MenuBar = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -30,6 +30,7 @@ const MenuBar = () => {
   const { permission, requestPermission, showNotification, isSupported } = useNotification();
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [showFocusPopup, setShowFocusPopup] = useState(false);
@@ -95,6 +96,8 @@ const MenuBar = () => {
     setIsMenuOpen(false);
   };
 
+  const isActivePath = (path) => location.pathname === path;
+
   return (
     <>
       <motion.div
@@ -136,7 +139,7 @@ const MenuBar = () => {
                   item.special 
                     ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-md hover:shadow-lg hover:from-pink-500 hover:to-purple-500' 
                     : `hover:bg-gray-100 dark:hover:bg-gray-800 ${
-                        window.location.pathname === item.path 
+                      isActivePath(item.path) 
                           ? 'bg-gray-100 dark:bg-gray-800 text-purple-600 dark:text-purple-400' 
                           : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100'
                       }`
@@ -147,7 +150,7 @@ const MenuBar = () => {
                 <item.icon size={18} className={
                   item.special 
                     ? 'text-white' 
-                    : window.location.pathname === item.path 
+                    : isActivePath(item.path) 
                       ? 'text-purple-600 dark:text-purple-400' 
                       : 'text-gray-500 dark:text-gray-400'
                 } />
@@ -273,7 +276,7 @@ const MenuBar = () => {
                     item.special 
                       ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-md hover:from-pink-500 hover:to-purple-500' 
                       : `hover:bg-gray-50 dark:hover:bg-gray-800 ${
-                          window.location.pathname === item.path 
+                          isActivePath(item.path) 
                             ? 'bg-gray-100 dark:bg-gray-800 text-purple-600 dark:text-purple-400' 
                             : 'text-gray-600 dark:text-gray-300'
                         }`
@@ -282,7 +285,7 @@ const MenuBar = () => {
                   <item.icon size={20} className={
                     item.special 
                       ? 'text-white' 
-                      : window.location.pathname === item.path 
+                      : isActivePath(item.path) 
                         ? 'text-purple-600 dark:text-purple-400' 
                         : 'text-gray-500 dark:text-gray-400'
                   } />
