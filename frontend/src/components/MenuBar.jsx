@@ -63,6 +63,7 @@ const MenuBar = () => {
   }, [showNotificationPanel, showFocusPopup]);
 
   const handleQuickFocus = () => {
+    setIsMenuOpen(false);
     // Show customization popup first
     setShowFocusPopup(true);
     // Don't start focus mode yet - wait for user to configure and click "Start Focus"
@@ -97,6 +98,28 @@ const MenuBar = () => {
   };
 
   const isActivePath = (path) => location.pathname === path;
+
+  const getNotificationPanelStyle = () => {
+    if (!notificationButtonRef.current) {
+      return {
+        top: '80px',
+        left: '8px',
+        width: 'min(20rem, calc(100vw - 1rem))'
+      };
+    }
+
+    const rect = notificationButtonRef.current.getBoundingClientRect();
+    const panelWidth = Math.min(320, Math.max(220, window.innerWidth - 16));
+    const minLeft = window.scrollX + 8;
+    const maxLeft = window.scrollX + window.innerWidth - panelWidth - 8;
+    const desiredLeft = rect.right - panelWidth + window.scrollX;
+
+    return {
+      top: `${rect.bottom + window.scrollY + 8}px`,
+      left: `${Math.min(Math.max(desiredLeft, minLeft), maxLeft)}px`,
+      width: `${panelWidth}px`
+    };
+  };
 
   return (
     <>
@@ -334,15 +357,8 @@ const MenuBar = () => {
           initial={{ opacity: 0, y: -10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          className="fixed w-80 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl p-4 z-40 transition-colors duration-300"
-          style={{
-            top: notificationButtonRef.current ? 
-              notificationButtonRef.current.getBoundingClientRect().bottom + window.scrollY + 8 : 
-              '80px',
-            left: notificationButtonRef.current ? 
-              notificationButtonRef.current.getBoundingClientRect().right - 320 + window.scrollX : 
-              'calc(100vw - 336px)'
-          }}
+          className="fixed bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl p-4 z-40 transition-colors duration-300"
+          style={getNotificationPanelStyle()}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="space-y-4">
