@@ -76,6 +76,13 @@ const MenuBar = () => {
     return () => document.removeEventListener('keydown', handleEscapeKey);
   }, [showNotificationPanel, showFocusPopup, isMenuOpen]);
 
+  // Ensure transient overlays are closed after route changes.
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setShowNotificationPanel(false);
+    setShowFocusPopup(false);
+  }, [location.pathname]);
+
   // Lock page scrolling while the focus settings modal is open.
   useEffect(() => {
     if (!showFocusPopup) return undefined;
