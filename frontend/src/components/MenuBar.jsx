@@ -76,6 +76,18 @@ const MenuBar = () => {
     return () => document.removeEventListener('keydown', handleEscapeKey);
   }, [showNotificationPanel, showFocusPopup, isMenuOpen]);
 
+  // Lock page scrolling while the focus settings modal is open.
+  useEffect(() => {
+    if (!showFocusPopup) return undefined;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [showFocusPopup]);
+
   const handleQuickFocus = () => {
     setIsMenuOpen(false);
     // Show customization popup first
